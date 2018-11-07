@@ -3,9 +3,10 @@ package valueObjects
 import "time"
 
 type PaymentInterface interface {
-	getPayment() error
-	getType() (string, error)
+	Payment(payment int, type_ string, currency string, date time.Time) error
+	getPayment()
+	getType() string
 	getCurrency() string
-	getDate() (time.Time, error)
-	getState() (string, error)
+	getDate() time.Time
+	getState() string
 }
