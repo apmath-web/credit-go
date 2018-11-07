@@ -6,6 +6,8 @@ import (
 )
 
 type CreditInterface interface {
+	Credit(person valueObjects.PersonInterface, amount int64, agreementAt time.Time,
+		currency string, duration int, percent int)
 	getId() int
 	getPerson() valueObjects.PersonInterface
 	getAmount() int64
