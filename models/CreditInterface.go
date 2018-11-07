@@ -17,8 +17,8 @@ type CreditInterface interface {
 	getPercent() int
 
 	getRounding() int
-	getRemainAmount()
-	getPayments(type_ string, state string) []valueObjects.PaymentInterface
+	getRemainAmount() data.Money
+	getPayments(type_ data.Type, state data.State) []valueObjects.PaymentInterface
 
 	writeOf(payment valueObjects.PaymentInterface) error
 }

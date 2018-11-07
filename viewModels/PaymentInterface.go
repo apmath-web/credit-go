@@ -8,9 +8,9 @@ import (
 type PaymentInterface interface {
 	ViewModelInterface
 	hydrate(payment valueObjects.PaymentInterface) error
-	getPayment() error
-	getType() string
-	getCurrency() string
-	getDate() time.Time
-	getState() string
+	getPayment() data.Money
+	getType() data.Type
+	getCurrency() data.Currency
+	getDate() data.Date
+	getState() data.State
 }
