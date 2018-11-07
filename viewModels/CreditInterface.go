@@ -1,8 +1,8 @@
 package viewModels
 
 import (
-	"credit-go/models"
-	"credit-go/valueObjects"
+	"github.com/apmath-web/credit-go/models"
+	"github.com/apmath-web/credit-go/valueObjects"
 	"time"
 )
 

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"credit-go/valueObjects"
+	"github.com/apmath-web/credit-go/valueObjects"
 	"time"
 )
 

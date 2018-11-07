@@ -1,6 +1,6 @@
 package viewModels
 
-import "credit-go/valueObjects"
+import "github.com/apmath-web/credit-go/valueObjects"
 
 type ViewModelInterface interface {
 	Fill(JsonData interface{}) (bool, error)

@@ -1,6 +1,6 @@
 package repositories
 
-import "credit-go/models"
+import "github.com/apmath-web/credit-go/models"
 
 type CreditsRepositoryInterface interface {
 	get(id int) models.CreditInterface
