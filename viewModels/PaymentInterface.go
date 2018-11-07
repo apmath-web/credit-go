@@ -1,13 +1,16 @@
 package viewModels
 
-import "time"
+import (
+	"credit-go/valueObjects"
+	"time"
+)
 
 type PaymentInterface interface {
 	ViewModelInterface
-	hydrate(payment interface{}) error
+	hydrate(payment valueObjects.PaymentInterface) error
 	getPayment() error
-	getType() (string, error)
+	getType() string
 	getCurrency() string
-	getDate() (time.Time, error)
-	getState() (string, error)
+	getDate() time.Time
+	getState() string
 }

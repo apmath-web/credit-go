@@ -1,8 +1,10 @@
 package viewModels
 
+import "credit-go/valueObjects"
+
 type PersonInterface interface {
 	ViewModelInterface
-	hydrate(person interface{}) error
-	getFirstName() (string, error)
-	getLastName() (string, error)
+	hydrate(person valueObjects.PersonInterface) error
+	getFirstName() string
+	getLastName() string
 }
