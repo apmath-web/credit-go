@@ -1,9 +1,9 @@
 package viewModels
 
 import (
+	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/models"
 	"github.com/apmath-web/credit-go/valueObjects"
-	"time"
 )
 
 type CreditInterface interface {

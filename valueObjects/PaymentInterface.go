@@ -1,6 +1,8 @@
 package valueObjects
 
-import "time"
+import (
+	"github.com/apmath-web/credit-go/data"
+)
 
 type PaymentInterface interface {
 	Payment(payment int, type_ data.Type,
