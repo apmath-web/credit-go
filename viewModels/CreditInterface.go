@@ -8,11 +8,11 @@ import (
 
 type CreditInterface interface {
 	ViewModelInterface
-	hydrate(credit models.CreditInterface) error
-	getPerson() valueObjects.PersonInterface
-	getAmount() data.Money
+	Hydrate(credit models.CreditInterface) error
+	GetPerson() valueObjects.PersonInterface
+	GetAmount() data.Money
 	getAgreementAt() data.Date
-	getCurrency() data.Currency
-	getDuration() int32
-	getPercent() int32
+	GetCurrency() data.Currency
+	GetDuration() int32
+	GetPercent() int32
 }
