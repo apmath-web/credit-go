@@ -1,7 +1,7 @@
 package valueObjects
 
 type MessageInterface interface {
-	Message(field string, text string) error
+	Message(field string, text string) MessageInterface
 	GetField() string
 	GetText() string
 }
