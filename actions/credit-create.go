@@ -10,24 +10,36 @@ import (
 )
 
 func Create(response http.ResponseWriter, request *http.Request) {
+	response.Header().Add("Content-Type", "application/json; charset=utf-8")
 	creditViewModel := new(viewModels.Credit)
 	ok, _ := creditViewModel.Fill(request)
-	fmt.Println(ok)
 	if !ok {
-		encoder := json.NewEncoder(response)
-		err := encoder.Encode(valueObjects.GenMessageInArray("Json", "Invalid json"))
-		if err != nil {
-			log.Fatal(err)
-		}
+		fmt.Fprintf(response, "messages:[{\"Package\":\"Invalid json format\"}]")
+		return
 	}
 	ok = creditViewModel.Validate()
 	if !ok {
-		encoder := json.NewEncoder(response)
-		err := encoder.Encode(creditViewModel.GetValidation().GetMessages())
-		if err != nil {
-			log.Fatal(err)
-		}
+		jsonData := PtrMessagesToJson(creditViewModel.GetValidation().GetMessages())
+		fmt.Fprint(response, jsonData)
+		return
 	}
 	response.Header().Add("Content-Type", "application/json; charset=utf-8")
 	fmt.Fprintf(response, "{\"id\":1}")
+}
+
+func PtrMessagesToJson(messagesPtr []valueObjects.MessageInterface) string {
+	type message struct {
+		Field string `json:"field"`
+		Text  string `json:"text"`
+	}
+	messages := []message{}
+	for _, b := range messagesPtr {
+		messages = append(messages, message{Field: b.GetField(), Text: b.GetText()})
+	}
+	jsonData, err := json.Marshal(&messages)
+	if err != nil {
+		log.Fatalf("%+v", err)
+		return "{}"
+	}
+	return string(jsonData)
 }

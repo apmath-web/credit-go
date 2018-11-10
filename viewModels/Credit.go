@@ -2,7 +2,6 @@ package viewModels
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/models"
 	"github.com/apmath-web/credit-go/valueObjects"
@@ -25,7 +24,6 @@ func (c *Credit) Fill(JsonData *http.Request) (bool, error) {
 	body := JsonData.Body
 	decoder := json.NewDecoder(body)
 	if err := decoder.Decode(c); err != nil {
-		fmt.Println(body, c)
 		return false, err
 	}
 	if c.AgreementAt == "" {
