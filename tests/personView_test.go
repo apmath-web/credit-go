@@ -9,21 +9,25 @@ import (
 )
 
 func TestPersonViewCreation(t *testing.T) {
-	req := tests.GenerateRequest("{\"FirstName\":\"FName\",\"LastName\":\"LName\"}")
+	req := tests.GenerateRequest(
+		"{\"firstName\":\"FName\",\"lastName\":\"LName\"}")
 	a := new(viewModels.Person)
 	if _, err := a.Fill(req); err != nil {
 		t.Errorf("Can't parse. Error %v", err)
 	}
 	if a.GetLastName() != "LName" {
-		t.Errorf("Don't fill FirstName. Got: %+v. Want: %+v.", a.LastName, "Lname")
+		t.Errorf("Don't fill FirstName. "+
+			"Got: %+v. Want: %+v.", a.GetLastName(), "Lname")
 	}
 	if a.GetFirstName() != "FName" {
-		t.Errorf("Don't fill LastName. Got: %+v. Want: %+v.", a.FirstName, "Fname")
+		t.Errorf("Don't fill LastName. "+
+			"Got: %+v. Want: %+v.", a.GetFirstName(), "Fname")
 	}
 }
 
 func TestPersonViewValidationPos(t *testing.T) {
-	req := tests.GenerateRequest("{\"FirstName\":\"FName\",\"LastName\":\"LName\"}")
+	req := tests.GenerateRequest(
+		"{\"firstName\":\"FName\",\"lastName\":\"LName\"}")
 	a := new(viewModels.Person)
 	if _, err := a.Fill(req); err != nil {
 		t.Errorf("Can't parse. Error %v", err)
@@ -37,7 +41,8 @@ func TestPersonViewValidationPos(t *testing.T) {
 }
 
 func TestPersonViewValidationNeg(t *testing.T) {
-	req := tests.GenerateRequest("{\"FirstName\":\"FName\"}")
+	req := tests.GenerateRequest(
+		"{\"firstName\":\"FName\"}")
 	a := new(viewModels.Person)
 	if _, err := a.Fill(req); err != nil {
 		t.Errorf("Can't parse. Error %v", err)

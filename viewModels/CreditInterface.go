@@ -11,8 +11,9 @@ type CreditInterface interface {
 	Hydrate(credit models.CreditInterface) error
 	GetPerson() valueObjects.PersonInterface
 	GetAmount() data.Money
-	getAgreementAt() data.Date
+	GetAgreementAt() data.Date
 	GetCurrency() data.Currency
 	GetDuration() int32
 	GetPercent() int32
+	GetRounding() int32
 }

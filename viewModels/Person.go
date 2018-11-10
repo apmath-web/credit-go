@@ -11,8 +11,8 @@ import (
 
 type Person struct {
 	validMessages valueObjects.Validation
-	FirstName     string
-	LastName      string
+	FirstName     string `json:"firstName"`
+	LastName      string `json:"lastName"`
 }
 
 func (p *Person) Fill(JsonData *http.Request) (bool, error) {
