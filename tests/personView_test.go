@@ -1,6 +1,7 @@
-package main
+package tests_test
 
 import (
+	"github.com/apmath-web/credit-go/tests"
 	"github.com/apmath-web/credit-go/valueObjects"
 	"github.com/apmath-web/credit-go/viewModels"
 	"reflect"
@@ -8,7 +9,7 @@ import (
 )
 
 func TestPersonViewCreation(t *testing.T) {
-	req := GenerateRequest("{\"FirstName\":\"FName\",\"LastName\":\"LName\"}")
+	req := tests.GenerateRequest("{\"FirstName\":\"FName\",\"LastName\":\"LName\"}")
 	a := new(viewModels.Person)
 	if _, err := a.Fill(req); err != nil {
 		t.Errorf("Can't parse. Error %v", err)
@@ -22,7 +23,7 @@ func TestPersonViewCreation(t *testing.T) {
 }
 
 func TestPersonViewValidationPos(t *testing.T) {
-	req := GenerateRequest("{\"FirstName\":\"FName\",\"LastName\":\"LName\"}")
+	req := tests.GenerateRequest("{\"FirstName\":\"FName\",\"LastName\":\"LName\"}")
 	a := new(viewModels.Person)
 	if _, err := a.Fill(req); err != nil {
 		t.Errorf("Can't parse. Error %v", err)
@@ -36,7 +37,7 @@ func TestPersonViewValidationPos(t *testing.T) {
 }
 
 func TestPersonViewValidationNeg(t *testing.T) {
-	req := GenerateRequest("{\"FirstName\":\"FName\"}")
+	req := tests.GenerateRequest("{\"FirstName\":\"FName\"}")
 	a := new(viewModels.Person)
 	if _, err := a.Fill(req); err != nil {
 		t.Errorf("Can't parse. Error %v", err)

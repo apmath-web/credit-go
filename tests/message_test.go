@@ -1,4 +1,4 @@
-package main
+package tests_test
 
 import (
 	"github.com/apmath-web/credit-go/valueObjects"
