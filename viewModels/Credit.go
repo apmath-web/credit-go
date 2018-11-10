@@ -49,7 +49,7 @@ func (c *Credit) Validate() bool {
 		c.validMessages.AddMessages(
 			valueObjects.GenMessageInArray("Amount", "Wrong amount value"))
 	}
-	if _, err := time.Parse("2018-01-01", c.AgreementAt); err != nil {
+	if _, err := time.Parse("2006-01-02", c.AgreementAt); err != nil {
 		c.validMessages.AddMessages(
 			valueObjects.GenMessageInArray("AgreementAt", "Is wrong format of date."))
 	}
@@ -67,7 +67,7 @@ func (c *Credit) Validate() bool {
 			valueObjects.GenMessageInArray("Percent",
 				"Is wrong value. Minimum 1%, maximum 300%."))
 	}
-	if c.GetRounding() != 1 || c.GetRounding() != 10 || c.GetRounding() != 100 {
+	if c.GetRounding() != 1 && c.GetRounding() != 10 && c.GetRounding() != 100 {
 		c.validMessages.AddMessages(
 			valueObjects.GenMessageInArray("Rounding",
 				"Is wrong value. Only 1, 10, 100."))

@@ -3,6 +3,7 @@ package tests_test
 import (
 	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/tests"
+	"github.com/apmath-web/credit-go/valueObjects"
 	"github.com/apmath-web/credit-go/viewModels"
 	"reflect"
 	"testing"
@@ -53,13 +54,18 @@ func TestCreditViewCreation(t *testing.T) {
 	}
 }
 
-/*func TestCreditViewValidationPos(t *testing.T) {
-	req := tests.GenerateRequest("{\"FirstName\":\"FName\",\"LastName\":\"LName\"}")
-	a := new(viewModels.Person)
-	if _, err := a.Fill(req); err != nil {
-		t.Errorf("Can't parse. Error %v", err)
+func TestCreditViewValidationPos(t *testing.T) {
+	req := tests.GenerateRequest(
+		"{\"person\":{\"firstName\":\"FName\",\"lastName\":\"LName\"}," +
+			"\"amount\":2000, \"agreementAt\":\"2018-10-10\", \"currency\":\"RUR\"," +
+			"\"duration\":6, \"percent\":10, \"rounding\":10}")
+	a := new(viewModels.Credit)
+	if ok, err := a.Fill(req); !ok {
+		t.Errorf("Can't parse. Error %+v", err)
 	}
-	a.Validate()
+	if !a.Validate() {
+		t.Errorf("Wrong validation.")
+	}
 	validator := a.GetValidation()
 	messages := validator.GetMessages()
 	if len(messages) != 0 {
@@ -68,21 +74,26 @@ func TestCreditViewCreation(t *testing.T) {
 }
 
 func TestCreditViewValidationNeg(t *testing.T) {
-	req := tests.GenerateRequest("{\"FirstName\":\"FName\"}")
-	a := new(viewModels.Person)
+	req := tests.GenerateRequest(
+		"{\"person\":{\"firstName\":\"FName\",\"lastName\":\"LName\"}," +
+			"\"amount\":200, \"agreementAt\":\"2018-10-10\", \"currency\":\"RUR\"," +
+			"\"duration\":6, \"percent\":301, \"rounding\":10}")
+	a := new(viewModels.Credit)
 	if _, err := a.Fill(req); err != nil {
 		t.Errorf("Can't parse. Error %v", err)
 	}
-	a.Validate()
+	if a.Validate() {
+		t.Errorf("Wrong validation.")
+	}
 	validator := a.GetValidation()
 	messages := validator.GetMessages()
 	if len(messages) != 1 {
 		t.Errorf("Error in parsing. Got: %+v", messages)
 	} else {
-		total := new(valueObjects.Message)
-		total.Message("LastName", "Is empty.")
-		if !reflect.DeepEqual(total, messages[0]) {
-			t.Errorf("Wrong message. Got: %+v. Want: %+v.", messages[0], total)
+		total := valueObjects.GenMessageInArray("Percent",
+			"Is wrong value. Minimum 1%, maximum 300%.")
+		if !reflect.DeepEqual(total, messages) {
+			t.Errorf("Wrong message. Got: %+v. Want: %+v.", messages, total)
 		}
 	}
-}*/
+}

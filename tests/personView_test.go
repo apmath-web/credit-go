@@ -49,7 +49,9 @@ func TestPersonViewValidationNeg(t *testing.T) {
 	if _, err := a.Fill(req); err != nil {
 		t.Errorf("Can't parse. Error %v", err)
 	}
-	a.Validate()
+	if a.Validate() {
+		t.Errorf("Wrong validation.")
+	}
 	validator := a.GetValidation()
 	messages := validator.GetMessages()
 	if len(messages) != 1 {
