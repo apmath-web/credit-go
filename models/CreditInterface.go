@@ -11,7 +11,7 @@ type CreditInterface interface {
 	GetId() int
 	GetPerson() valueObjects.PersonInterface
 	GetAmount() data.Money
-	GetAgrementAt() data.Date
+	GetAgreementAt() data.Date
 	GetCurrency() data.Currency
 	GetDuration() int
 	GetPercent() int

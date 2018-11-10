@@ -1,31 +1,56 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"github.com/apmath-web/credit-go/valueObjects"
 	"github.com/apmath-web/credit-go/viewModels"
-	"io/ioutil"
 	"reflect"
 	"testing"
 )
 
 func TestPersonViewCreation(t *testing.T) {
-	req := ioutil.NopCloser(bytes.NewBufferString("{\"firstName\":\"aaa\"}"))
-	decoder := json.NewDecoder(req)
+	req := GenerateRequest("{\"FirstName\":\"FName\",\"LastName\":\"LName\"}")
 	a := new(viewModels.Person)
-	_ = decoder.Decode(a)
-	if !a.Validate() {
-		validator := a.GetValidation()
-		messages := validator.GetMessages()
-		message := messages[0]
-		messageEx := new(valueObjects.Message)
-		messageEx.Message("LastName", "Is empty.")
-		if !reflect.DeepEqual(message, messageEx) {
-			t.Errorf("Don't give any messages. Got: %+v. Want: %+v.", message, messageEx)
-		}
-	} else {
-		t.Errorf("Isn't good validation")
+	if _, err := a.Fill(req); err != nil {
+		t.Errorf("Can't parse. Error %v", err)
 	}
+	if a.GetLastName() != "LName" {
+		t.Errorf("Don't fill FirstName. Got: %+v. Want: %+v.", a.LastName, "Lname")
+	}
+	if a.GetFirstName() != "FName" {
+		t.Errorf("Don't fill LastName. Got: %+v. Want: %+v.", a.FirstName, "Fname")
+	}
+}
 
+func TestPersonViewValidationPos(t *testing.T) {
+	req := GenerateRequest("{\"FirstName\":\"FName\",\"LastName\":\"LName\"}")
+	a := new(viewModels.Person)
+	if _, err := a.Fill(req); err != nil {
+		t.Errorf("Can't parse. Error %v", err)
+	}
+	a.Validate()
+	validator := a.GetValidation()
+	messages := validator.GetMessages()
+	if len(messages) != 0 {
+		t.Errorf("Error in parsing. Error %v", messages)
+	}
+}
+
+func TestPersonViewValidationNeg(t *testing.T) {
+	req := GenerateRequest("{\"FirstName\":\"FName\"}")
+	a := new(viewModels.Person)
+	if _, err := a.Fill(req); err != nil {
+		t.Errorf("Can't parse. Error %v", err)
+	}
+	a.Validate()
+	validator := a.GetValidation()
+	messages := validator.GetMessages()
+	if len(messages) != 1 {
+		t.Errorf("Error in parsing. Got: %+v", messages)
+	} else {
+		total := new(valueObjects.Message)
+		total.Message("LastName", "Is empty.")
+		if !reflect.DeepEqual(total, messages[0]) {
+			t.Errorf("Wrong message. Got: %+v. Want: %+v.", messages[0], total)
+		}
+	}
 }

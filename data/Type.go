@@ -4,5 +4,5 @@ type Type string
 
 const (
 	Regular Type = "Regular"
-	Early   Type = "Eraly"
+	Early   Type = "Early"
 )

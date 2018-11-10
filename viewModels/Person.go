@@ -1,13 +1,13 @@
 package viewModels
 
+import "C"
 import (
+	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/apmath-web/credit-go/valueObjects"
+	"net/http"
 )
-
-type SimplePerson struct {
-	FirstName string
-	LastName  string
-}
 
 type Person struct {
 	validMessages valueObjects.Validation
@@ -15,11 +15,17 @@ type Person struct {
 	LastName      string
 }
 
-func (p *Person) Fill(JsonData interface{}) (bool, error) {
-	return false, nil
+func (p *Person) Fill(JsonData *http.Request) (bool, error) {
+	body := JsonData.Body
+	decoder := json.NewDecoder(body)
+	if err := decoder.Decode(p); err != nil {
+		fmt.Println(body, p)
+		return false, err
+	}
+	return true, nil
 }
 func (p *Person) Fetch() (interface{}, error) {
-	return 0, nil
+	return 0, errors.New("Not implement\n")
 }
 func (p *Person) Validate() bool {
 	if p.FirstName == "" {
@@ -41,7 +47,7 @@ func (p *Person) GetValidation() valueObjects.ValidationInterface {
 	return &p.validMessages
 }
 func (p *Person) Hydrate(person valueObjects.PersonInterface) error {
-	return nil
+	return errors.New("Not implement\n")
 }
 func (p *Person) GetFirstName() string {
 	return p.FirstName
