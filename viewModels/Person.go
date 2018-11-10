@@ -24,9 +24,11 @@ func (p *Person) Fill(JsonData *http.Request) (bool, error) {
 	}
 	return true, nil
 }
+
 func (p *Person) Fetch() (interface{}, error) {
 	return 0, errors.New("Not implement\n")
 }
+
 func (p *Person) Validate() bool {
 	if p.FirstName == "" {
 		message := new(valueObjects.Message)
@@ -43,15 +45,19 @@ func (p *Person) Validate() bool {
 	}
 	return false
 }
+
 func (p *Person) GetValidation() valueObjects.ValidationInterface {
 	return &p.validMessages
 }
+
 func (p *Person) Hydrate(person valueObjects.PersonInterface) error {
 	return errors.New("Not implement\n")
 }
+
 func (p *Person) GetFirstName() string {
 	return p.FirstName
 }
+
 func (p *Person) GetLastName() string {
 	return p.LastName
 }
