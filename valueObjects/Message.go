@@ -15,3 +15,9 @@ func (m *Message) GetField() string {
 func (m *Message) GetText() string {
 	return m.text
 }
+
+func GenMessageInArray(field string, text string) []MessageInterface {
+	mesage := new(Message)
+	mesage.Message(field, text)
+	return []MessageInterface{mesage}
+}

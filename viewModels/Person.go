@@ -31,14 +31,12 @@ func (p *Person) Fetch() (interface{}, error) {
 
 func (p *Person) Validate() bool {
 	if p.FirstName == "" {
-		message := new(valueObjects.Message)
-		message.Message("FistName", "Is empty.")
-		p.validMessages.AddMessages([]valueObjects.MessageInterface{message})
+		p.validMessages.AddMessages(
+			valueObjects.GenMessageInArray("FistName", "Is empty."))
 	}
 	if p.LastName == "" {
-		message := new(valueObjects.Message)
-		message.Message("LastName", "Is empty.")
-		p.validMessages.AddMessages([]valueObjects.MessageInterface{message})
+		p.validMessages.AddMessages(
+			valueObjects.GenMessageInArray("LastName", "Is empty."))
 	}
 	if len(p.validMessages.GetMessages()) == 0 {
 		return true
