@@ -60,7 +60,8 @@ func TestPersonViewValidationNeg(t *testing.T) {
 		total := new(valueObjects.Message)
 		total.Message("LastName", "Is empty.")
 		if !reflect.DeepEqual(total, messages[0]) {
-			t.Errorf("Wrong message. Got: %+v. Want: %+v.", messages[0], total)
+			t.Errorf("Wrong message. Got: %+v. Want: %+v.",
+				messages[0], total)
 		}
 	}
 }
