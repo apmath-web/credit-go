@@ -31,9 +31,6 @@ func (c *Credit) Fill(JsonData *http.Request) (bool, error) {
 	if c.AgreementAt == "" {
 		c.AgreementAt = data.Date(time.Now()).Date2Str()
 	}
-	if _, err := time.Parse("2006-01-02", c.AgreementAt); err != nil {
-		return false, err
-	}
 	return true, nil
 }
 
