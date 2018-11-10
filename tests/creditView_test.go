@@ -1,16 +1,20 @@
 package tests_test
 
 import (
+	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/tests"
 	"github.com/apmath-web/credit-go/viewModels"
+	"reflect"
 	"testing"
+	"time"
 )
 
 func TestCreditViewCreation(t *testing.T) {
 	req := tests.GenerateRequest(
 		"{\"person\":{\"firstName\":\"FName\",\"lastName\":\"LName\"}," +
-			"\"amount\":2000, \"agreementAt\":\"2018-10-10\", \"currency\":\"RUB\"," +
+			"\"amount\":2000, \"agreementAt\":\"2018-10-10\", \"currency\":\"RUR\"," +
 			"\"duration\":6, \"percent\":10, \"rounding\":10}")
+	date, _ := time.Parse("2006-01-02", "2018-10-10")
 	a := new(viewModels.Credit)
 	if ok, err := a.Fill(req); !ok {
 		t.Errorf("Can't parse. Error %v", err)
@@ -23,17 +27,17 @@ func TestCreditViewCreation(t *testing.T) {
 		t.Errorf("Don't fill LastName. Got: %+v. "+
 			"Want: %+v.", a.GetPerson().GetFirstName(), "Fname")
 	}
-	if a.GetAmount() != 2000 {
+	if a.GetAmount() != data.Money(2000) {
 		t.Errorf("Don't fill Amount. Got: %+v. "+
 			"Want: %+v.", a.GetAmount(), 2000)
 	}
-	if a.GetAgreementAt() != "2018-10-10" {
+	if !reflect.DeepEqual(a.GetAgreementAt(), data.Date(date)) {
 		t.Errorf("Don't fill AgreementAt. Got: %+v. "+
-			"Want: %+v.", a.GetAgreementAt(), "2018-10-10")
+			"Want: %+v.", a.GetAgreementAt().Date2Str(), "2018-10-10")
 	}
-	if a.GetCurrency() != "RUB" {
+	if a.GetCurrency() != data.RUR {
 		t.Errorf("Don't fill Curency. Got: %+v. "+
-			"Want: %+v.", a.GetCurrency(), "RUB")
+			"Want: %+v.", a.GetCurrency(), "RUR")
 	}
 	if a.GetDuration() != 6 {
 		t.Errorf("Don't fill Duration. Got: %+v. "+
