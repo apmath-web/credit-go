@@ -25,7 +25,7 @@ func (c *Credit) Fill(JsonData *http.Request) (bool, valueObjects.ValidationInte
 	decoder := json.NewDecoder(body)
 	if err := decoder.Decode(c); err != nil {
 		c.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("Package", "Is not correct json format"))
+			valueObjects.GenMessageInArray("Package", err.Error()))
 		return false, &c.validMessages
 	}
 	if c.AgreementAt == "" {

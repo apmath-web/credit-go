@@ -19,7 +19,7 @@ func (p *Person) Fill(JsonData *http.Request) (bool, valueObjects.ValidationInte
 	decoder := json.NewDecoder(body)
 	if err := decoder.Decode(p); err != nil {
 		p.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("Package", "Is not correct"))
+			valueObjects.GenMessageInArray("Package", err.Error()))
 		return false, &p.validMessages
 	}
 	return true, nil
