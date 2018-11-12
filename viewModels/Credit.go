@@ -40,7 +40,7 @@ func (c *Credit) check(type_ string, name string) (bool, interface{}) {
 	} else {
 		if ok {
 			if type_ == "float64" {
-				type_ = "int"
+				type_ = "number"
 			}
 			c.validMessages.AddMessages(
 				valueObjects.GenMessageInArray(name, "Must be "+type_+"."))
