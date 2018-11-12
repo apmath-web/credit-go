@@ -2,26 +2,20 @@ package viewModels
 
 import "C"
 import (
-	"encoding/json"
 	"errors"
 	"github.com/apmath-web/credit-go/valueObjects"
-	"net/http"
+	"reflect"
 )
 
 type Person struct {
 	validMessages valueObjects.Validation
 	FirstName     string `json:"firstName"`
 	LastName      string `json:"lastName"`
+	JsonData      map[string]interface{}
 }
 
-func (p *Person) Fill(JsonData *http.Request) (bool, valueObjects.ValidationInterface) {
-	body := JsonData.Body
-	decoder := json.NewDecoder(body)
-	if err := decoder.Decode(p); err != nil {
-		p.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("Package", err.Error()))
-		return false, &p.validMessages
-	}
+func (p *Person) Fill(jsonData map[string]interface{}) (bool, valueObjects.ValidationInterface) {
+	p.JsonData = jsonData
 	return true, nil
 }
 
@@ -29,15 +23,34 @@ func (p *Person) Fetch() (interface{}, error) {
 	return 0, errors.New("Not implement\n")
 }
 
+func (p *Person) check(type_ string, name string) (bool, interface{}) {
+	if val, ok := p.JsonData[name]; ok && reflect.TypeOf(val).String() == type_ {
+		if val == "" {
+			p.validMessages.AddMessages(
+				valueObjects.GenMessageInArray(name, "Is empty."))
+			return false, nil
+		}
+		return true, val
+	} else {
+		if ok {
+			p.validMessages.AddMessages(
+				valueObjects.GenMessageInArray(name, "Must be string."))
+		} else {
+			p.validMessages.AddMessages(
+				valueObjects.GenMessageInArray(name, "No field."))
+		}
+		return false, nil
+	}
+}
+
 func (p *Person) Validate() bool {
-	if p.FirstName == "" {
-		p.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("FistName", "Is empty."))
+	if ok, val := p.check("string", "firstName"); ok {
+		p.FirstName = val.(string)
 	}
-	if p.LastName == "" {
-		p.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("LastName", "Is empty."))
+	if ok, val := p.check("string", "lastName"); ok {
+		p.LastName = val.(string)
 	}
+
 	if len(p.validMessages.GetMessages()) == 0 {
 		return true
 	}
