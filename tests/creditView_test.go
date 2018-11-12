@@ -14,7 +14,7 @@ func TestCreditViewCreation(t *testing.T) {
 	req := tests.GenerateRequest(
 		"{\"person\":{\"firstName\":\"FName\",\"lastName\":\"LName\"}," +
 			"\"amount\":2000, \"agreementAt\":\"2018-10-10\", \"currency\":\"RUR\"," +
-			"\"duration\":6, \"percent\":10, \"rounding\":10}")
+			"\"duration\":6, \"percent\":10}")
 	date, _ := time.Parse("2006-01-02", "2018-10-10")
 	a := new(viewModels.Credit)
 	if ok, err := a.Fill(req); !ok {
@@ -48,17 +48,13 @@ func TestCreditViewCreation(t *testing.T) {
 		t.Errorf("Don't fill Percent. Got: %+v. "+
 			"Want: %+v.", a.GetPercent(), 10)
 	}
-	if a.GetRounding() != 10 {
-		t.Errorf("Don't fill Rounding. Got: %+v. "+
-			"Want: %+v.", a.GetRounding(), 10)
-	}
 }
 
 func TestCreditViewValidationPos(t *testing.T) {
 	req := tests.GenerateRequest(
 		"{\"person\":{\"firstName\":\"FName\",\"lastName\":\"LName\"}," +
 			"\"amount\":2000, \"agreementAt\":\"2018-10-10\", \"currency\":\"RUR\"," +
-			"\"duration\":6, \"percent\":10, \"rounding\":10}")
+			"\"duration\":6, \"percent\":10}")
 	a := new(viewModels.Credit)
 	if ok, err := a.Fill(req); !ok {
 		t.Errorf("Can't parse. Error %+v", err)
@@ -77,7 +73,7 @@ func TestCreditViewValidationNeg(t *testing.T) {
 	req := tests.GenerateRequest(
 		"{\"person\":{\"firstName\":\"FName\",\"lastName\":\"LName\"}," +
 			"\"amount\":200, \"agreementAt\":\"2018-10-10\", \"currency\":\"RUR\"," +
-			"\"duration\":6, \"percent\":301, \"rounding\":10}")
+			"\"duration\":6, \"percent\":301}")
 	a := new(viewModels.Credit)
 	if _, err := a.Fill(req); err != nil {
 		t.Errorf("Can't parse. Error %v", err)

@@ -15,5 +15,4 @@ type CreditInterface interface {
 	GetCurrency() data.Currency
 	GetDuration() int32
 	GetPercent() int32
-	GetRounding() int32
 }

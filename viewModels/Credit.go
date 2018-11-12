@@ -17,7 +17,6 @@ type Credit struct {
 	Currency      string `json:"currency"`
 	Duration      int32  `json:"duration"`
 	Percent       int32  `json:"percent"`
-	Rounding      int32  `json:"rounding"`
 }
 
 func (c *Credit) Fill(JsonData *http.Request) (bool, valueObjects.ValidationInterface) {
@@ -64,11 +63,6 @@ func (c *Credit) Validate() bool {
 			valueObjects.GenMessageInArray("Percent",
 				"Is wrong value. Minimum 1%, maximum 300%."))
 	}
-	if c.GetRounding() != 1 && c.GetRounding() != 10 && c.GetRounding() != 100 {
-		c.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("Rounding",
-				"Is wrong value. Only 1, 10, 100."))
-	}
 	if len(c.validMessages.GetMessages()) == 0 {
 		return true
 	}
@@ -105,8 +99,4 @@ func (c *Credit) GetDuration() int32 {
 
 func (c *Credit) GetPercent() int32 {
 	return c.Percent
-}
-
-func (c *Credit) GetRounding() int32 {
-	return c.Rounding
 }
