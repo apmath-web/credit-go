@@ -16,11 +16,11 @@ func TestCreditViewCreation(t *testing.T) {
 			"firstName": "Fname",
 			"lastName":  "Lname",
 		},
-		"amount":      2000,
+		"amount":      2000.,
 		"agreementAt": "2018-10-10",
 		"currency":    "RUR",
-		"duration":    6,
-		"percent":     10,
+		"duration":    6.,
+		"percent":     10.,
 	}
 	date, _ := time.Parse("2006-01-02", "2018-10-10")
 	a := new(viewModels.Credit)
@@ -62,11 +62,11 @@ func TestCreditViewValidationPos(t *testing.T) {
 			"firstName": "Fname",
 			"lastName":  "Lname",
 		},
-		"amount":      2000,
+		"amount":      2000.,
 		"agreementAt": "2018-10-10",
 		"currency":    "RUR",
-		"duration":    6,
-		"percent":     10,
+		"duration":    6.,
+		"percent":     10.,
 	}
 	a := new(viewModels.Credit)
 	a.Fill(req)
@@ -86,11 +86,11 @@ func TestCreditViewValidationNeg(t *testing.T) {
 			"firstName": "Fname",
 			"lastName":  "Lname",
 		},
-		"amount":      2000,
+		"amount":      2000.,
 		"agreementAt": "2018-10-10",
 		"currency":    "RUR",
-		"duration":    6,
-		"percent":     301,
+		"duration":    6.,
+		"percent":     301.,
 	}
 	a := new(viewModels.Credit)
 	a.Fill(req)

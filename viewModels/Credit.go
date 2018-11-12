@@ -21,11 +21,8 @@ type Credit struct {
 
 func (c *Credit) Fill(jsonData map[string]interface{}) bool {
 	c.JsonData = jsonData
-	if ok, val := c.check("map[string]interface {}", "person"); ok {
-		c.Person.Fill(val.(map[string]interface{}))
-		return true
-	}
-	return false
+
+	return true
 }
 
 func (c *Credit) Fetch() (interface{}, error) {
@@ -33,16 +30,18 @@ func (c *Credit) Fetch() (interface{}, error) {
 }
 
 func (c *Credit) check(type_ string, name string) (bool, interface{}) {
-
-	if val, ok := c.JsonData[name]; ok && reflect.TypeOf(val).String() == type_ {
-		if val == nil {
-			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray(name, "Is empty."))
-			return false, nil
-		}
+	if val, ok := c.JsonData[name]; ok && val == nil {
+		c.validMessages.AddMessages(
+			valueObjects.GenMessageInArray(name, "Is empty."))
+		return false, nil
+	}
+	if val, ok := c.JsonData[name]; ok && val != nil && reflect.TypeOf(val).String() == type_ {
 		return true, val
 	} else {
 		if ok {
+			if type_ == "float64" {
+				type_ = "int"
+			}
 			c.validMessages.AddMessages(
 				valueObjects.GenMessageInArray(name, "Must be "+type_+"."))
 		} else {
@@ -54,17 +53,20 @@ func (c *Credit) check(type_ string, name string) (bool, interface{}) {
 }
 
 func (c *Credit) Validate() bool {
+	if ok, val := c.check("map[string]interface {}", "person"); ok {
+		c.Person.Fill(val.(map[string]interface{}))
+	}
 	if !c.Person.Validate() {
 		c.validMessages.AddMessages(c.Person.GetValidation().GetMessages())
 	}
-	if ok, val := c.check("int", "amount"); ok {
-		c.Amount = int64(val.(int))
+	if ok, val := c.check("float64", "amount"); ok {
+		c.Amount = int64(val.(float64))
 		if c.GetAmount() <= 0 {
 			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray("Amount", "Wrong amount value"))
+				valueObjects.GenMessageInArray("amount", "Wrong amount value"))
 		}
 	}
-	if val, ok := c.JsonData["agreementAt"]; ok && reflect.TypeOf(val).String() == "string" {
+	if val, ok := c.JsonData["agreementAt"]; ok && val != nil && reflect.TypeOf(val).String() == "string" {
 		if val == nil {
 			c.AgreementAt = data.Date(time.Now()).Date2Str()
 		}
@@ -73,29 +75,29 @@ func (c *Credit) Validate() bool {
 		c.AgreementAt = val.(string)
 		if _, err := time.Parse("2006-01-02", c.AgreementAt); err != nil {
 			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray("AgreementAt", "Is wrong format of date."))
+				valueObjects.GenMessageInArray("agreementAt", "Is wrong format of date."))
 		}
 	}
 	if ok, val := c.check("string", "currency"); ok {
 		c.Currency = val.(string)
 		if c.GetCurrency() == "" {
 			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray("Currency", "Is unknown currency."))
+				valueObjects.GenMessageInArray("currency", "Is unknown currency."))
 		}
 	}
-	if ok, val := c.check("int", "duration"); ok {
-		c.Duration = int32(val.(int))
+	if ok, val := c.check("float64", "duration"); ok {
+		c.Duration = int32(val.(float64))
 		if c.GetDuration() < 6 || c.GetDuration() > 1200 {
 			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray("Duration",
+				valueObjects.GenMessageInArray("duration",
 					"Is wrong value. Minimum 6 months, maximum 1200."))
 		}
 	}
-	if ok, val := c.check("int", "percent"); ok {
-		c.Percent = int32(val.(int))
+	if ok, val := c.check("float64", "percent"); ok {
+		c.Percent = int32(val.(float64))
 		if c.GetPercent() < 1 || c.GetPercent() > 300 {
 			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray("Percent",
+				valueObjects.GenMessageInArray("percent",
 					"Is wrong value. Minimum 1%, maximum 300%."))
 		}
 	}

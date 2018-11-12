@@ -11,15 +11,19 @@ import (
 
 func Create(response http.ResponseWriter, request *http.Request) {
 	response.Header().Add("Content-Type", "application/json; charset=utf-8")
-	creditViewModel := new(viewModels.Credit)
-	ok, errMessage := creditViewModel.Fill(request)
-	if !ok {
-		jsonData := PtrMessagesToJson(errMessage.GetMessages())
+	decoder := json.NewDecoder(request.Body)
+	var jsonData map[string]interface{}
+	err := decoder.Decode(&jsonData)
+	if err != nil {
+		jsonData := PtrMessagesToJson(
+			valueObjects.GenMessageInArray("Package", err.Error()))
 		response.WriteHeader(400)
 		fmt.Fprint(response, jsonData)
 		return
 	}
-	ok = creditViewModel.Validate()
+	creditViewModel := new(viewModels.Credit)
+	creditViewModel.Fill(jsonData)
+	ok := creditViewModel.Validate()
 	if !ok {
 		jsonData := PtrMessagesToJson(creditViewModel.GetValidation().GetMessages())
 		response.WriteHeader(400)

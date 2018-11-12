@@ -24,12 +24,12 @@ func (p *Person) Fetch() (interface{}, error) {
 }
 
 func (p *Person) check(type_ string, name string) (bool, interface{}) {
-	if val, ok := p.JsonData[name]; ok && reflect.TypeOf(val).String() == type_ {
-		if val == nil {
-			p.validMessages.AddMessages(
-				valueObjects.GenMessageInArray(name, "Is empty."))
-			return false, nil
-		}
+	if val, ok := p.JsonData[name]; ok && val == nil {
+		p.validMessages.AddMessages(
+			valueObjects.GenMessageInArray(name, "Is empty."))
+		return false, nil
+	}
+	if val, ok := p.JsonData[name]; ok && val != nil && reflect.TypeOf(val).String() == type_ {
 		return true, val
 	} else {
 		if ok {
