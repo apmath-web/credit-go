@@ -1,11 +1,10 @@
 package viewModels
 
 import (
-	"encoding/json"
 	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/models"
 	"github.com/apmath-web/credit-go/valueObjects"
-	"net/http"
+	"reflect"
 	"time"
 )
 
@@ -17,51 +16,88 @@ type Credit struct {
 	Currency      string `json:"currency"`
 	Duration      int32  `json:"duration"`
 	Percent       int32  `json:"percent"`
+	JsonData      map[string]interface{}
 }
 
-func (c *Credit) Fill(JsonData *http.Request) (bool, valueObjects.ValidationInterface) {
-	body := JsonData.Body
-	decoder := json.NewDecoder(body)
-	if err := decoder.Decode(c); err != nil {
-		c.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("Package", err.Error()))
-		return false, &c.validMessages
+func (c *Credit) Fill(jsonData map[string]interface{}) bool {
+	c.JsonData = jsonData
+	if ok, val := c.check("map[string]interface {}", "person"); ok {
+		c.Person.Fill(val.(map[string]interface{}))
+		return true
 	}
-	if c.AgreementAt == "" {
-		c.AgreementAt = data.Date(time.Now()).Date2Str()
-	}
-	return true, nil
+	return false
 }
 
 func (c *Credit) Fetch() (interface{}, error) {
 	return 0, nil
 }
 
+func (c *Credit) check(type_ string, name string) (bool, interface{}) {
+
+	if val, ok := c.JsonData[name]; ok && reflect.TypeOf(val).String() == type_ {
+		if val == nil {
+			c.validMessages.AddMessages(
+				valueObjects.GenMessageInArray(name, "Is empty."))
+			return false, nil
+		}
+		return true, val
+	} else {
+		if ok {
+			c.validMessages.AddMessages(
+				valueObjects.GenMessageInArray(name, "Must be "+type_+"."))
+		} else {
+			c.validMessages.AddMessages(
+				valueObjects.GenMessageInArray(name, "No field."))
+		}
+		return false, nil
+	}
+}
+
 func (c *Credit) Validate() bool {
 	if !c.Person.Validate() {
 		c.validMessages.AddMessages(c.Person.GetValidation().GetMessages())
 	}
-	if c.GetAmount() <= 0 {
-		c.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("Amount", "Wrong amount value"))
+	if ok, val := c.check("int", "amount"); ok {
+		c.Amount = int64(val.(int))
+		if c.GetAmount() <= 0 {
+			c.validMessages.AddMessages(
+				valueObjects.GenMessageInArray("Amount", "Wrong amount value"))
+		}
 	}
-	if _, err := time.Parse("2006-01-02", c.AgreementAt); err != nil {
-		c.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("AgreementAt", "Is wrong format of date."))
+	if val, ok := c.JsonData["agreementAt"]; ok && reflect.TypeOf(val).String() == "string" {
+		if val == nil {
+			c.AgreementAt = data.Date(time.Now()).Date2Str()
+		}
 	}
-	if c.GetCurrency() == "" {
-		c.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("Currency", "Is unknown currency."))
+	if ok, val := c.check("string", "agreementAt"); ok {
+		c.AgreementAt = val.(string)
+		if _, err := time.Parse("2006-01-02", c.AgreementAt); err != nil {
+			c.validMessages.AddMessages(
+				valueObjects.GenMessageInArray("AgreementAt", "Is wrong format of date."))
+		}
 	}
-	if c.GetDuration() < 6 || c.GetDuration() > 1200 {
-		c.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("Duration",
-				"Is wrong value. Minimum 6 months, maximum 1200."))
+	if ok, val := c.check("string", "currency"); ok {
+		c.Currency = val.(string)
+		if c.GetCurrency() == "" {
+			c.validMessages.AddMessages(
+				valueObjects.GenMessageInArray("Currency", "Is unknown currency."))
+		}
 	}
-	if c.GetPercent() < 1 || c.GetPercent() > 300 {
-		c.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("Percent",
-				"Is wrong value. Minimum 1%, maximum 300%."))
+	if ok, val := c.check("int", "duration"); ok {
+		c.Duration = int32(val.(int))
+		if c.GetDuration() < 6 || c.GetDuration() > 1200 {
+			c.validMessages.AddMessages(
+				valueObjects.GenMessageInArray("Duration",
+					"Is wrong value. Minimum 6 months, maximum 1200."))
+		}
+	}
+	if ok, val := c.check("int", "percent"); ok {
+		c.Percent = int32(val.(int))
+		if c.GetPercent() < 1 || c.GetPercent() > 300 {
+			c.validMessages.AddMessages(
+				valueObjects.GenMessageInArray("Percent",
+					"Is wrong value. Minimum 1%, maximum 300%."))
+		}
 	}
 	if len(c.validMessages.GetMessages()) == 0 {
 		return true

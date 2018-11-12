@@ -14,9 +14,9 @@ type Person struct {
 	JsonData      map[string]interface{}
 }
 
-func (p *Person) Fill(jsonData map[string]interface{}) (bool, valueObjects.ValidationInterface) {
+func (p *Person) Fill(jsonData map[string]interface{}) bool {
 	p.JsonData = jsonData
-	return true, nil
+	return true
 }
 
 func (p *Person) Fetch() (interface{}, error) {
@@ -25,7 +25,7 @@ func (p *Person) Fetch() (interface{}, error) {
 
 func (p *Person) check(type_ string, name string) (bool, interface{}) {
 	if val, ok := p.JsonData[name]; ok && reflect.TypeOf(val).String() == type_ {
-		if val == "" {
+		if val == nil {
 			p.validMessages.AddMessages(
 				valueObjects.GenMessageInArray(name, "Is empty."))
 			return false, nil
@@ -34,7 +34,7 @@ func (p *Person) check(type_ string, name string) (bool, interface{}) {
 	} else {
 		if ok {
 			p.validMessages.AddMessages(
-				valueObjects.GenMessageInArray(name, "Must be string."))
+				valueObjects.GenMessageInArray(name, "Must be "+type_+"."))
 		} else {
 			p.validMessages.AddMessages(
 				valueObjects.GenMessageInArray(name, "No field."))
@@ -50,7 +50,6 @@ func (p *Person) Validate() bool {
 	if ok, val := p.check("string", "lastName"); ok {
 		p.LastName = val.(string)
 	}
-
 	if len(p.validMessages.GetMessages()) == 0 {
 		return true
 	}

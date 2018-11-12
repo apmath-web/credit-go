@@ -1,8 +1,8 @@
 package tests_test
 
 import (
+	"fmt"
 	"github.com/apmath-web/credit-go/data"
-	"github.com/apmath-web/credit-go/tests"
 	"github.com/apmath-web/credit-go/valueObjects"
 	"github.com/apmath-web/credit-go/viewModels"
 	"reflect"
@@ -11,20 +11,26 @@ import (
 )
 
 func TestCreditViewCreation(t *testing.T) {
-	req := tests.GenerateRequest(
-		"{\"person\":{\"firstName\":\"FName\",\"lastName\":\"LName\"}," +
-			"\"amount\":2000, \"agreementAt\":\"2018-10-10\", \"currency\":\"RUR\"," +
-			"\"duration\":6, \"percent\":10}")
+	req := map[string]interface{}{
+		"person": map[string]interface{}{
+			"firstName": "Fname",
+			"lastName":  "Lname",
+		},
+		"amount":      2000,
+		"agreementAt": "2018-10-10",
+		"currency":    "RUR",
+		"duration":    6,
+		"percent":     10,
+	}
 	date, _ := time.Parse("2006-01-02", "2018-10-10")
 	a := new(viewModels.Credit)
-	if ok, err := a.Fill(req); !ok {
-		t.Errorf("Can't parse. Error %v", err)
-	}
-	if a.GetPerson().GetLastName() != "LName" {
+	a.Fill(req)
+	a.Validate()
+	if a.GetPerson().GetLastName() != "Lname" {
 		t.Errorf("Don't fill FirstName. Got: %+v. "+
 			"Want: %+v.", a.GetPerson().GetLastName(), "Lname")
 	}
-	if a.GetPerson().GetFirstName() != "FName" {
+	if a.GetPerson().GetFirstName() != "Fname" {
 		t.Errorf("Don't fill LastName. Got: %+v. "+
 			"Want: %+v.", a.GetPerson().GetFirstName(), "Fname")
 	}
@@ -51,14 +57,19 @@ func TestCreditViewCreation(t *testing.T) {
 }
 
 func TestCreditViewValidationPos(t *testing.T) {
-	req := tests.GenerateRequest(
-		"{\"person\":{\"firstName\":\"FName\",\"lastName\":\"LName\"}," +
-			"\"amount\":2000, \"agreementAt\":\"2018-10-10\", \"currency\":\"RUR\"," +
-			"\"duration\":6, \"percent\":10}")
-	a := new(viewModels.Credit)
-	if ok, err := a.Fill(req); !ok {
-		t.Errorf("Can't parse. Error %+v", err)
+	req := map[string]interface{}{
+		"person": map[string]interface{}{
+			"firstName": "Fname",
+			"lastName":  "Lname",
+		},
+		"amount":      2000,
+		"agreementAt": "2018-10-10",
+		"currency":    "RUR",
+		"duration":    6,
+		"percent":     10,
 	}
+	a := new(viewModels.Credit)
+	a.Fill(req)
 	if !a.Validate() {
 		t.Errorf("Wrong validation.")
 	}
@@ -70,20 +81,27 @@ func TestCreditViewValidationPos(t *testing.T) {
 }
 
 func TestCreditViewValidationNeg(t *testing.T) {
-	req := tests.GenerateRequest(
-		"{\"person\":{\"firstName\":\"FName\",\"lastName\":\"LName\"}," +
-			"\"amount\":200, \"agreementAt\":\"2018-10-10\", \"currency\":\"RUR\"," +
-			"\"duration\":6, \"percent\":301}")
-	a := new(viewModels.Credit)
-	if _, err := a.Fill(req); err != nil {
-		t.Errorf("Can't parse. Error %v", err)
+	req := map[string]interface{}{
+		"person": map[string]interface{}{
+			"firstName": "Fname",
+			"lastName":  "Lname",
+		},
+		"amount":      2000,
+		"agreementAt": "2018-10-10",
+		"currency":    "RUR",
+		"duration":    6,
+		"percent":     301,
 	}
+	a := new(viewModels.Credit)
+	a.Fill(req)
 	if a.Validate() {
 		t.Errorf("Wrong validation.")
 	}
 	validator := a.GetValidation()
 	messages := validator.GetMessages()
 	if len(messages) != 1 {
+		fmt.Println(messages[0])
+		fmt.Println(messages[1])
 		t.Errorf("Error in parsing. Got: %+v", messages)
 	} else {
 		total := valueObjects.GenMessageInArray("Percent",

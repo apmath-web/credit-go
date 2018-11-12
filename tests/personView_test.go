@@ -13,9 +13,7 @@ func TestPersonViewCreation(t *testing.T) {
 		"lastName":  "Lname",
 	}
 	a := new(viewModels.Person)
-	if _, err := a.Fill(req); err != nil {
-		t.Errorf("Can't parse. Error %v", err)
-	}
+	a.Fill(req)
 	a.Validate()
 	if a.GetLastName() != "Lname" {
 		t.Errorf("Don't fill firstName. "+
@@ -33,9 +31,7 @@ func TestPersonViewValidationPos(t *testing.T) {
 		"lastName":  "Lname",
 	}
 	a := new(viewModels.Person)
-	if _, err := a.Fill(req); err != nil {
-		t.Errorf("Can't parse. Error %v", err)
-	}
+	a.Fill(req)
 	if !a.Validate() {
 		t.Errorf("Wrong validation.")
 	}
@@ -51,9 +47,7 @@ func TestPersonViewValidationNeg(t *testing.T) {
 		"firstName": "Fname",
 	}
 	a := new(viewModels.Person)
-	if _, err := a.Fill(req); err != nil {
-		t.Errorf("Can't parse. Error %v", err)
-	}
+	a.Fill(req)
 	if a.Validate() {
 		t.Errorf("Wrong validation.")
 	}

@@ -5,7 +5,7 @@ import (
 )
 
 type ViewModelInterface interface {
-	Fill(jsonData map[string]interface{}) (bool, valueObjects.ValidationInterface)
+	Fill(jsonData map[string]interface{}) bool
 	Fetch() (interface{}, error)
 	Validate() bool
 	GetValidation() valueObjects.ValidationInterface
