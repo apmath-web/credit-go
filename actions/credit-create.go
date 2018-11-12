@@ -15,12 +15,14 @@ func Create(response http.ResponseWriter, request *http.Request) {
 	ok, errMessage := creditViewModel.Fill(request)
 	if !ok {
 		jsonData := PtrMessagesToJson(errMessage.GetMessages())
+		response.WriteHeader(400)
 		fmt.Fprint(response, jsonData)
 		return
 	}
 	ok = creditViewModel.Validate()
 	if !ok {
 		jsonData := PtrMessagesToJson(creditViewModel.GetValidation().GetMessages())
+		response.WriteHeader(400)
 		fmt.Fprint(response, jsonData)
 		return
 	}
