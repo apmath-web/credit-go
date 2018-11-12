@@ -5,18 +5,18 @@ import (
 	"fmt"
 	"github.com/apmath-web/credit-go/valueObjects"
 	"github.com/apmath-web/credit-go/viewModels"
-	"log"
 	"net/http"
 )
 
 func Create(response http.ResponseWriter, request *http.Request) {
-	response.Header().Add("Content-Type", "application/json; charset=utf-8")
+	response.Header().Add("Content-Type",
+		"application/json; charset=utf-8")
 	decoder := json.NewDecoder(request.Body)
 	var jsonData map[string]interface{}
 	err := decoder.Decode(&jsonData)
 	if err != nil {
-		jsonData := PtrMessagesToJson(
-			valueObjects.GenMessageInArray("Package", err.Error()))
+		jsonData := PtrMessagesToJsonErrMessage("Validation error",
+			valueObjects.GenMessageInArray("package", err.Error()))
 		response.WriteHeader(400)
 		fmt.Fprint(response, jsonData)
 		return
@@ -25,7 +25,8 @@ func Create(response http.ResponseWriter, request *http.Request) {
 	creditViewModel.Fill(jsonData)
 	ok := creditViewModel.Validate()
 	if !ok {
-		jsonData := PtrMessagesToJson(creditViewModel.GetValidation().GetMessages())
+		jsonData := PtrMessagesToJsonErrMessage("Validation error",
+			creditViewModel.GetValidation().GetMessages())
 		response.WriteHeader(400)
 		fmt.Fprint(response, jsonData)
 		return
@@ -33,19 +34,23 @@ func Create(response http.ResponseWriter, request *http.Request) {
 	fmt.Fprintf(response, "{\"id\":1}")
 }
 
-func PtrMessagesToJson(messagesPtr []valueObjects.MessageInterface) string {
-	type message struct {
-		Field string `json:"field"`
-		Text  string `json:"text"`
+func PtrMessagesToJsonErrMessage(message string,
+	descriptionPtr []valueObjects.MessageInterface) string {
+	if descriptionPtr == nil {
+		return "{\"message\":\"" + message + "\"}"
 	}
-	messages := []message{}
-	for _, b := range messagesPtr {
-		messages = append(messages, message{Field: b.GetField(), Text: b.GetText()})
+	var description map[string]interface{}
+	description = make(map[string]interface{})
+	for _, item := range descriptionPtr {
+		description[item.GetField()] = item.GetText()
 	}
-	jsonData, err := json.Marshal(&messages)
+	jsonData := map[string]interface{}{
+		"message":     message,
+		"description": description,
+	}
+	res, err := json.Marshal(jsonData)
 	if err != nil {
-		log.Fatalf("%+v", err)
-		return "{}"
+		return "{\"message\":\"some error on server\"}"
 	}
-	return string(jsonData)
+	return string(res)
 }
