@@ -6,4 +6,5 @@ type CreditsRepositoryInterface interface {
 	Get(id int) models.CreditInterface
 	Store(credit models.CreditInterface) error
 	Remove(credit models.CreditInterface) error
+	GenId() int
 }
