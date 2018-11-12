@@ -6,7 +6,7 @@ import (
 )
 
 type ViewModelInterface interface {
-	Fill(JsonData *http.Request) (bool, error)
+	Fill(JsonData *http.Request) (bool, valueObjects.ValidationInterface)
 	Fetch() (interface{}, error)
 	Validate() bool
 	GetValidation() valueObjects.ValidationInterface

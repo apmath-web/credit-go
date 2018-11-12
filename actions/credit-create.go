@@ -12,9 +12,10 @@ import (
 func Create(response http.ResponseWriter, request *http.Request) {
 	response.Header().Add("Content-Type", "application/json; charset=utf-8")
 	creditViewModel := new(viewModels.Credit)
-	ok, _ := creditViewModel.Fill(request)
+	ok, errMessage := creditViewModel.Fill(request)
 	if !ok {
-		fmt.Fprintf(response, "messages:[{\"Package\":\"Invalid json format\"}]")
+		jsonData := PtrMessagesToJson(errMessage.GetMessages())
+		fmt.Fprint(response, jsonData)
 		return
 	}
 	ok = creditViewModel.Validate()
@@ -23,7 +24,6 @@ func Create(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprint(response, jsonData)
 		return
 	}
-	response.Header().Add("Content-Type", "application/json; charset=utf-8")
 	fmt.Fprintf(response, "{\"id\":1}")
 }
 

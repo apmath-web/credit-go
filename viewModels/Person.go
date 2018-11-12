@@ -4,7 +4,6 @@ import "C"
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/apmath-web/credit-go/valueObjects"
 	"net/http"
 )
@@ -15,12 +14,13 @@ type Person struct {
 	LastName      string `json:"lastName"`
 }
 
-func (p *Person) Fill(JsonData *http.Request) (bool, error) {
+func (p *Person) Fill(JsonData *http.Request) (bool, valueObjects.ValidationInterface) {
 	body := JsonData.Body
 	decoder := json.NewDecoder(body)
 	if err := decoder.Decode(p); err != nil {
-		fmt.Println(body, p)
-		return false, err
+		p.validMessages.AddMessages(
+			valueObjects.GenMessageInArray("Package", "Is not correct"))
+		return false, &p.validMessages
 	}
 	return true, nil
 }

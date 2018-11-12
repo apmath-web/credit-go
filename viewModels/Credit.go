@@ -20,11 +20,13 @@ type Credit struct {
 	Rounding      int32  `json:"rounding"`
 }
 
-func (c *Credit) Fill(JsonData *http.Request) (bool, error) {
+func (c *Credit) Fill(JsonData *http.Request) (bool, valueObjects.ValidationInterface) {
 	body := JsonData.Body
 	decoder := json.NewDecoder(body)
 	if err := decoder.Decode(c); err != nil {
-		return false, err
+		c.validMessages.AddMessages(
+			valueObjects.GenMessageInArray("Package", "Is not correct json format"))
+		return false, &c.validMessages
 	}
 	if c.AgreementAt == "" {
 		c.AgreementAt = data.Date(time.Now()).Date2Str()
