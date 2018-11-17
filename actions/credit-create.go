@@ -16,7 +16,8 @@ func Create(response http.ResponseWriter, request *http.Request) {
 	err := decoder.Decode(&jsonData)
 	if err != nil {
 		jsonData := PtrMessagesToJsonErrMessage("Validation error",
-			valueObjects.GenMessageInArray("package", err.Error()))
+			[]valueObjects.MessageInterface{
+				valueObjects.GenMessage("package", err.Error())})
 		response.WriteHeader(400)
 		fmt.Fprint(response, jsonData)
 		return

@@ -16,8 +16,8 @@ func (m *Message) GetText() string {
 	return m.text
 }
 
-func GenMessageInArray(field string, text string) []MessageInterface {
+func GenMessage(field string, text string) MessageInterface {
 	message := new(Message)
 	message.Message(field, text)
-	return []MessageInterface{message}
+	return message
 }

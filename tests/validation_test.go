@@ -13,13 +13,15 @@ func TestValidation(t *testing.T) {
 	message2 := new(valueObjects.Message)
 	message2.Message("field2", "text2")
 	ans1 := []valueObjects.MessageInterface{message1, message2}
-	total.AddMessages(ans1)
+	total.AddMessage(message1)
+	total.AddMessage(message2)
 	if !reflect.DeepEqual(ans1, total.GetMessages()) {
 		t.Errorf("Don't save any messages. Got: %+v. Want %+v.",
 			total.GetMessages(), ans1)
 	}
 	ans2 := []valueObjects.MessageInterface{message1, message2, message1, message2}
-	total.AddMessages(ans1)
+	total.AddMessage(message1)
+	total.AddMessage(message2)
 	if !reflect.DeepEqual(ans2, total.GetMessages()) {
 		t.Errorf("Don't append any messages. Got: %+v. Want: %+v.",
 			total.GetMessages(), ans2)

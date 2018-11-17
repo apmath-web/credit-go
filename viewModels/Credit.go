@@ -31,8 +31,8 @@ func (c *Credit) Fetch() (interface{}, error) {
 
 func (c *Credit) check(type_ string, name string) (bool, interface{}) {
 	if val, ok := c.JsonData[name]; ok && val == nil {
-		c.validMessages.AddMessages(
-			valueObjects.GenMessageInArray(name, "Is empty."))
+		c.validMessages.AddMessage(
+			valueObjects.GenMessage(name, "Is empty."))
 		return false, nil
 	}
 	if val, ok := c.JsonData[name]; ok && val != nil && reflect.TypeOf(val).String() == type_ {
@@ -42,11 +42,11 @@ func (c *Credit) check(type_ string, name string) (bool, interface{}) {
 			if type_ == "float64" {
 				type_ = "number"
 			}
-			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray(name, "Must be "+type_+"."))
+			c.validMessages.AddMessage(
+				valueObjects.GenMessage(name, "Must be "+type_+"."))
 		} else {
-			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray(name, "No field."))
+			c.validMessages.AddMessage(
+				valueObjects.GenMessage(name, "No field."))
 		}
 		return false, nil
 	}
@@ -57,13 +57,18 @@ func (c *Credit) Validate() bool {
 		c.Person.Fill(val.(map[string]interface{}))
 	}
 	if !c.Person.Validate() {
-		c.validMessages.AddMessages(c.Person.GetValidation().GetMessages())
+		personValidationMessages := c.Person.GetValidation().GetMessages()
+		for _, message := range personValidationMessages {
+			messageValidation := new(valueObjects.Message)
+			messageValidation.Message("person."+message.GetField(), message.GetText())
+			c.validMessages.AddMessage(messageValidation)
+		}
 	}
 	if ok, val := c.check("float64", "amount"); ok {
 		c.Amount = int64(val.(float64))
 		if c.GetAmount() <= 0 {
-			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray("amount", "Wrong amount value"))
+			c.validMessages.AddMessage(
+				valueObjects.GenMessage("amount", "Wrong amount value"))
 		}
 	}
 	if val, ok := c.JsonData["agreementAt"]; ok && val != nil && reflect.TypeOf(val).String() == "string" {
@@ -74,30 +79,30 @@ func (c *Credit) Validate() bool {
 	if ok, val := c.check("string", "agreementAt"); ok {
 		c.AgreementAt = val.(string)
 		if _, err := time.Parse("2006-01-02", c.AgreementAt); err != nil {
-			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray("agreementAt", "Is wrong format of date."))
+			c.validMessages.AddMessage(
+				valueObjects.GenMessage("agreementAt", "Is wrong format of date."))
 		}
 	}
 	if ok, val := c.check("string", "currency"); ok {
 		c.Currency = val.(string)
 		if c.GetCurrency() == "" {
-			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray("currency", "Is unknown currency."))
+			c.validMessages.AddMessage(
+				valueObjects.GenMessage("currency", "Is unknown currency."))
 		}
 	}
 	if ok, val := c.check("float64", "duration"); ok {
 		c.Duration = int32(val.(float64))
 		if c.GetDuration() < 6 || c.GetDuration() > 1200 {
-			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray("duration",
+			c.validMessages.AddMessage(
+				valueObjects.GenMessage("duration",
 					"Is wrong value. Minimum 6 months, maximum 1200."))
 		}
 	}
 	if ok, val := c.check("float64", "percent"); ok {
 		c.Percent = int32(val.(float64))
 		if c.GetPercent() < 1 || c.GetPercent() > 300 {
-			c.validMessages.AddMessages(
-				valueObjects.GenMessageInArray("percent",
+			c.validMessages.AddMessage(
+				valueObjects.GenMessage("percent",
 					"Is wrong value. Minimum 1%, maximum 300%."))
 		}
 	}

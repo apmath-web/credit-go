@@ -104,10 +104,10 @@ func TestCreditViewValidationNeg(t *testing.T) {
 		fmt.Println(messages[1])
 		t.Errorf("Error in parsing. Got: %+v", messages)
 	} else {
-		total := valueObjects.GenMessageInArray("percent",
+		total := valueObjects.GenMessage("percent",
 			"Is wrong value. Minimum 1%, maximum 300%.")
-		if !reflect.DeepEqual(total, messages) {
-			t.Errorf("Wrong message. Got: %+v. Want: %+v.", messages[0], total[0])
+		if !reflect.DeepEqual(total, messages[0]) {
+			t.Errorf("Wrong message. Got: %+v. Want: %+v.", messages[0], total)
 		}
 	}
 }

@@ -25,19 +25,19 @@ func (p *Person) Fetch() (interface{}, error) {
 
 func (p *Person) check(type_ string, name string) (bool, interface{}) {
 	if val, ok := p.JsonData[name]; ok && val == nil {
-		p.validMessages.AddMessages(
-			valueObjects.GenMessageInArray(name, "Is empty."))
+		p.validMessages.AddMessage(
+			valueObjects.GenMessage(name, "Is empty."))
 		return false, nil
 	}
 	if val, ok := p.JsonData[name]; ok && val != nil && reflect.TypeOf(val).String() == type_ {
 		return true, val
 	} else {
 		if ok {
-			p.validMessages.AddMessages(
-				valueObjects.GenMessageInArray(name, "Must be "+type_+"."))
+			p.validMessages.AddMessage(
+				valueObjects.GenMessage(name, "Must be "+type_+"."))
 		} else {
-			p.validMessages.AddMessages(
-				valueObjects.GenMessageInArray(name, "No field."))
+			p.validMessages.AddMessage(
+				valueObjects.GenMessage(name, "No field."))
 		}
 		return false, nil
 	}
