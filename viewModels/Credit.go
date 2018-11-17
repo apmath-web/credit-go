@@ -71,10 +71,9 @@ func (c *Credit) Validate() bool {
 				valueObjects.GenMessage("amount", "Wrong amount value"))
 		}
 	}
-	if val, ok := c.JsonData["agreementAt"]; ok && val != nil && reflect.TypeOf(val).String() == "string" {
-		if val == nil {
-			c.AgreementAt = data.Date(time.Now()).Date2Str()
-		}
+	if val, ok := c.JsonData["agreementAt"]; (ok && val == nil) || !ok {
+		c.AgreementAt = data.Date(time.Now()).Date2Str()
+		c.JsonData["agreementAt"] = c.AgreementAt
 	}
 	if ok, val := c.check("string", "agreementAt"); ok {
 		c.AgreementAt = val.(string)
