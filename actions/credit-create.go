@@ -11,6 +11,24 @@ import (
 func Create(response http.ResponseWriter, request *http.Request) {
 	response.Header().Add("Content-Type",
 		"application/json; charset=utf-8")
+	jsonData, ok := ToJson(response, request)
+	if !ok {
+		return
+	}
+	creditViewModel := new(viewModels.Credit)
+	creditViewModel.Fill(jsonData)
+	ok = creditViewModel.Validate()
+	if !ok {
+		jsonData := PtrMessagesToJsonErrMessage("Validation error",
+			creditViewModel.GetValidation().GetMessages())
+		response.WriteHeader(400)
+		fmt.Fprint(response, jsonData)
+		return
+	}
+	fmt.Fprintf(response, "{\"id\":1}")
+}
+
+func ToJson(response http.ResponseWriter, request *http.Request) (map[string]interface{}, bool) {
 	decoder := json.NewDecoder(request.Body)
 	var jsonData map[string]interface{}
 	err := decoder.Decode(&jsonData)
@@ -20,19 +38,9 @@ func Create(response http.ResponseWriter, request *http.Request) {
 				valueObjects.GenMessage("package", err.Error())})
 		response.WriteHeader(400)
 		fmt.Fprint(response, jsonData)
-		return
+		return nil, false
 	}
-	creditViewModel := new(viewModels.Credit)
-	creditViewModel.Fill(jsonData)
-	ok := creditViewModel.Validate()
-	if !ok {
-		jsonData := PtrMessagesToJsonErrMessage("Validation error",
-			creditViewModel.GetValidation().GetMessages())
-		response.WriteHeader(400)
-		fmt.Fprint(response, jsonData)
-		return
-	}
-	fmt.Fprintf(response, "{\"id\":1}")
+	return jsonData, true
 }
 
 func PtrMessagesToJsonErrMessage(message string,
