@@ -10,12 +10,12 @@ import (
 
 type Credit struct {
 	validMessages valueObjects.Validation
-	Person        *valueObjects.Person `json:"person"`
-	Amount        int64                `json:"amount"`
-	AgreementAt   string               `json:"agreementAt"`
-	Currency      string               `json:"currency"`
-	Duration      int32                `json:"duration"`
-	Percent       int32                `json:"percent"`
+	Person        valueObjects.PersonInterface `json:"person"`
+	Amount        int64                        `json:"amount"`
+	AgreementAt   string                       `json:"agreementAt"`
+	Currency      string                       `json:"currency"`
+	Duration      int32                        `json:"duration"`
+	Percent       int32                        `json:"percent"`
 	JsonData      map[string]interface{}
 }
 
@@ -60,13 +60,11 @@ func (c *Credit) Validate() bool {
 	if !viewPerson.Validate() {
 		personValidationMessages := viewPerson.GetValidation().GetMessages()
 		for _, message := range personValidationMessages {
-			messageValidation := new(valueObjects.Message)
-			messageValidation.Message("person."+message.GetField(), message.GetText())
+			messageValidation := valueObjects.GenMessage("person."+message.GetField(), message.GetText())
 			c.validMessages.AddMessage(messageValidation)
 		}
 	} else {
-		c.Person = new(valueObjects.Person)
-		c.Person.Person(viewPerson.GetFirstName(), viewPerson.GetLastName())
+		c.Person = valueObjects.GenPerson(viewPerson.GetFirstName(), viewPerson.GetLastName())
 	}
 	if val := c.check("float64", "amount"); val != nil {
 		c.Amount = int64(val.(float64))

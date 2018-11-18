@@ -6,8 +6,7 @@ import (
 )
 
 func TestMessage(t *testing.T) {
-	total := new(valueObjects.Message)
-	total.Message("Field", "Text")
+	total := valueObjects.GenMessage("Field", "Text")
 	if total.GetField() != "Field" {
 		t.Errorf("Message doesn't save its field. Got: '%s'. Want %s.",
 			total.GetField(), "Field")

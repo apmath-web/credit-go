@@ -8,10 +8,8 @@ import (
 
 func TestValidation(t *testing.T) {
 	total := valueObjects.Validation{}
-	message1 := new(valueObjects.Message)
-	message1.Message("field1", "text1")
-	message2 := new(valueObjects.Message)
-	message2.Message("field2", "text2")
+	message1 := valueObjects.GenMessage("field1", "text1")
+	message2 := valueObjects.GenMessage("field2", "text2")
 	ans1 := []valueObjects.MessageInterface{message1, message2}
 	total.AddMessage(message1)
 	total.AddMessage(message2)

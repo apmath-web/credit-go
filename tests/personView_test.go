@@ -56,8 +56,7 @@ func TestPersonViewValidationNeg(t *testing.T) {
 	if len(messages) != 1 {
 		t.Errorf("Error in parsing. Got: %+v", messages)
 	} else {
-		total := new(valueObjects.Message)
-		total.Message("lastName", "No field.")
+		total := valueObjects.GenMessage("lastName", "No field.")
 		if !reflect.DeepEqual(total, messages[0]) {
 			t.Errorf("Wrong message. Got: %+v. Want: %+v.",
 				messages[0], total)
