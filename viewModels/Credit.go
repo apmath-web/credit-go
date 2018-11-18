@@ -40,7 +40,7 @@ func (c *Credit) check(type_ string, name string) interface{} {
 	} else {
 		if ok {
 			if type_ == "float64" {
-				type_ = "number"
+				type_ = "integer number"
 			}
 			c.validMessages.AddMessage(
 				valueObjects.GenMessage(name, "Must be "+type_+"."))
@@ -83,7 +83,7 @@ func (c *Credit) validatePerson() {
 
 func (c *Credit) validateAgreementAt() {
 	if val, ok := c.JsonData["agreementAt"]; (ok && val == nil) || !ok {
-		// only for areementAt cause it isn't required
+		// only for agreementAt cause it isn't required
 		c.AgreementAt = data.Date(time.Now()).Date2Str()
 		c.JsonData["agreementAt"] = c.AgreementAt
 	}
