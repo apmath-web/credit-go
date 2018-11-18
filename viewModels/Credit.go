@@ -10,12 +10,12 @@ import (
 
 type Credit struct {
 	validMessages valueObjects.Validation
-	Person        valueObjects.PersonInterface `json:"person"`
-	Amount        int64                        `json:"amount"`
-	AgreementAt   string                       `json:"agreementAt"`
-	Currency      string                       `json:"currency"`
-	Duration      int32                        `json:"duration"`
-	Percent       int32                        `json:"percent"`
+	Person        Person `json:"person"`
+	Amount        int64  `json:"amount"`
+	AgreementAt   string `json:"agreementAt"`
+	Currency      string `json:"currency"`
+	Duration      int32  `json:"duration"`
+	Percent       int32  `json:"percent"`
 	JsonData      map[string]interface{}
 }
 
@@ -66,18 +66,15 @@ func (c *Credit) Validate() bool {
 }
 
 func (c *Credit) validatePerson() {
-	viewPerson := new(Person)
 	if val := c.check("map[string]interface {}", "person"); val != nil {
-		viewPerson.Fill(val.(map[string]interface{}))
+		c.Person.Fill(val.(map[string]interface{}))
 	}
-	if !viewPerson.Validate() {
-		personValidationMessages := viewPerson.GetValidation().GetMessages()
+	if !c.Person.Validate() {
+		personValidationMessages := c.Person.GetValidation().GetMessages()
 		for _, message := range personValidationMessages {
 			messageValidation := valueObjects.GenMessage("person."+message.GetField(), message.GetText())
 			c.validMessages.AddMessage(messageValidation)
 		}
-	} else {
-		c.Person = valueObjects.GenPerson(viewPerson.GetFirstName(), viewPerson.GetLastName())
 	}
 }
 
@@ -146,8 +143,8 @@ func (c *Credit) Hydrate(credit models.CreditInterface) error {
 	return nil
 }
 
-func (c *Credit) GetPerson() valueObjects.PersonInterface {
-	return c.Person
+func (c *Credit) GetPerson() PersonInterface {
+	return &c.Person
 }
 
 func (c *Credit) GetAmount() data.Money {
