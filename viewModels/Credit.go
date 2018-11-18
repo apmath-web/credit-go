@@ -53,6 +53,19 @@ func (c *Credit) check(type_ string, name string) interface{} {
 }
 
 func (c *Credit) Validate() bool {
+	c.validatePerson()
+	c.validateAmount()
+	c.validateAgreementAt()
+	c.validateCurrency()
+	c.validateDuration()
+	c.validatePercent()
+	if len(c.validMessages.GetMessages()) == 0 {
+		return true
+	}
+	return false
+}
+
+func (c *Credit) validatePerson() {
 	viewPerson := new(Person)
 	if val := c.check("map[string]interface {}", "person"); val != nil {
 		viewPerson.Fill(val.(map[string]interface{}))
@@ -66,13 +79,9 @@ func (c *Credit) Validate() bool {
 	} else {
 		c.Person = valueObjects.GenPerson(viewPerson.GetFirstName(), viewPerson.GetLastName())
 	}
-	if val := c.check("float64", "amount"); val != nil {
-		c.Amount = int64(val.(float64))
-		if c.GetAmount() <= 0 {
-			c.validMessages.AddMessage(
-				valueObjects.GenMessage("amount", "Wrong amount value"))
-		}
-	}
+}
+
+func (c *Credit) validateAgreementAt() {
 	if val, ok := c.JsonData["agreementAt"]; (ok && val == nil) || !ok {
 		// only for areementAt cause it isn't required
 		c.AgreementAt = data.Date(time.Now()).Date2Str()
@@ -85,6 +94,19 @@ func (c *Credit) Validate() bool {
 				valueObjects.GenMessage("agreementAt", "Is wrong format of date."))
 		}
 	}
+}
+
+func (c *Credit) validateAmount() {
+	if val := c.check("float64", "amount"); val != nil {
+		c.Amount = int64(val.(float64))
+		if c.GetAmount() <= 0 {
+			c.validMessages.AddMessage(
+				valueObjects.GenMessage("amount", "Wrong amount value"))
+		}
+	}
+}
+
+func (c *Credit) validateCurrency() {
 	if val := c.check("string", "currency"); val != nil {
 		c.Currency = val.(string)
 		if c.GetCurrency() == "" {
@@ -92,6 +114,9 @@ func (c *Credit) Validate() bool {
 				valueObjects.GenMessage("currency", "Is unknown currency."))
 		}
 	}
+}
+
+func (c *Credit) validateDuration() {
 	if val := c.check("float64", "duration"); val != nil {
 		c.Duration = int32(val.(float64))
 		if c.GetDuration() < 6 || c.GetDuration() > 1200 {
@@ -100,6 +125,9 @@ func (c *Credit) Validate() bool {
 					"Is wrong value. Minimum 6 months, maximum 1200."))
 		}
 	}
+}
+
+func (c *Credit) validatePercent() {
 	if val := c.check("float64", "percent"); val != nil {
 		c.Percent = int32(val.(float64))
 		if c.GetPercent() < 1 || c.GetPercent() > 300 {
@@ -108,10 +136,6 @@ func (c *Credit) Validate() bool {
 					"Is wrong value. Minimum 1%, maximum 300%."))
 		}
 	}
-	if len(c.validMessages.GetMessages()) == 0 {
-		return true
-	}
-	return false
 }
 
 func (c *Credit) GetValidation() valueObjects.ValidationInterface {
