@@ -10,12 +10,12 @@ import (
 
 type Credit struct {
 	validMessages valueObjects.Validation
-	Person        Person `json:"person"`
-	Amount        int64  `json:"amount"`
-	AgreementAt   string `json:"agreementAt"`
-	Currency      string `json:"currency"`
-	Duration      int32  `json:"duration"`
-	Percent       int32  `json:"percent"`
+	Person        *valueObjects.Person `json:"person"`
+	Amount        int64                `json:"amount"`
+	AgreementAt   string               `json:"agreementAt"`
+	Currency      string               `json:"currency"`
+	Duration      int32                `json:"duration"`
+	Percent       int32                `json:"percent"`
 	JsonData      map[string]interface{}
 }
 
@@ -53,16 +53,20 @@ func (c *Credit) check(type_ string, name string) interface{} {
 }
 
 func (c *Credit) Validate() bool {
+	viewPerson := new(Person)
 	if val := c.check("map[string]interface {}", "person"); val != nil {
-		c.Person.Fill(val.(map[string]interface{}))
+		viewPerson.Fill(val.(map[string]interface{}))
 	}
-	if !c.Person.Validate() {
-		personValidationMessages := c.Person.GetValidation().GetMessages()
+	if !viewPerson.Validate() {
+		personValidationMessages := viewPerson.GetValidation().GetMessages()
 		for _, message := range personValidationMessages {
 			messageValidation := new(valueObjects.Message)
 			messageValidation.Message("person."+message.GetField(), message.GetText())
 			c.validMessages.AddMessage(messageValidation)
 		}
+	} else {
+		c.Person = new(valueObjects.Person)
+		c.Person.Person(viewPerson.GetFirstName(), viewPerson.GetLastName())
 	}
 	if val := c.check("float64", "amount"); val != nil {
 		c.Amount = int64(val.(float64))
@@ -119,8 +123,8 @@ func (c *Credit) Hydrate(credit models.CreditInterface) error {
 	return nil
 }
 
-func (c *Credit) GetPerson() PersonInterface {
-	return &c.Person
+func (c *Credit) GetPerson() valueObjects.PersonInterface {
+	return c.Person
 }
 
 func (c *Credit) GetAmount() data.Money {
