@@ -74,6 +74,7 @@ func (c *Credit) Validate() bool {
 		}
 	}
 	if val, ok := c.JsonData["agreementAt"]; (ok && val == nil) || !ok {
+		// only for areementAt cause it isn't required
 		c.AgreementAt = data.Date(time.Now()).Date2Str()
 		c.JsonData["agreementAt"] = c.AgreementAt
 	}
