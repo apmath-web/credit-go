@@ -44,16 +44,24 @@ func (p *Person) check(type_ string, name string) interface{} {
 }
 
 func (p *Person) Validate() bool {
-	if val := p.check("string", "firstName"); val != nil {
-		p.FirstName = val.(string)
-	}
-	if val := p.check("string", "lastName"); val != nil {
-		p.LastName = val.(string)
-	}
+	p.validateFirstName()
+	p.validateLastName()
 	if len(p.validMessages.GetMessages()) == 0 {
 		return true
 	}
 	return false
+}
+
+func (p *Person) validateFirstName() {
+	if val := p.check("string", "firstName"); val != nil {
+		p.FirstName = val.(string)
+	}
+}
+
+func (p *Person) validateLastName() {
+	if val := p.check("string", "lastName"); val != nil {
+		p.LastName = val.(string)
+	}
 }
 
 func (p *Person) GetValidation() valueObjects.ValidationInterface {
