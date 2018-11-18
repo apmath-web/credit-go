@@ -23,14 +23,14 @@ func (p *Person) Fetch() (interface{}, error) {
 	return 0, errors.New("Not implement\n")
 }
 
-func (p *Person) check(type_ string, name string) (bool, interface{}) {
+func (p *Person) check(type_ string, name string) interface{} {
 	if val, ok := p.JsonData[name]; ok && val == nil {
 		p.validMessages.AddMessage(
 			valueObjects.GenMessage(name, "Is empty."))
-		return false, nil
+		return nil
 	}
 	if val, ok := p.JsonData[name]; ok && val != nil && reflect.TypeOf(val).String() == type_ {
-		return true, val
+		return val
 	} else {
 		if ok {
 			p.validMessages.AddMessage(
@@ -39,15 +39,15 @@ func (p *Person) check(type_ string, name string) (bool, interface{}) {
 			p.validMessages.AddMessage(
 				valueObjects.GenMessage(name, "No field."))
 		}
-		return false, nil
+		return nil
 	}
 }
 
 func (p *Person) Validate() bool {
-	if ok, val := p.check("string", "firstName"); ok {
+	if val := p.check("string", "firstName"); val != nil {
 		p.FirstName = val.(string)
 	}
-	if ok, val := p.check("string", "lastName"); ok {
+	if val := p.check("string", "lastName"); val != nil {
 		p.LastName = val.(string)
 	}
 	if len(p.validMessages.GetMessages()) == 0 {
