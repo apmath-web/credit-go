@@ -4,8 +4,8 @@ type Validation struct {
 	messages []MessageInterface
 }
 
-func (v *Validation) AddMessage(messages MessageInterface) {
-	v.messages = append(v.messages, messages)
+func (v *Validation) AddMessage(message MessageInterface) {
+	v.messages = append(v.messages, message)
 }
 
 func (v *Validation) GetMessages() []MessageInterface {

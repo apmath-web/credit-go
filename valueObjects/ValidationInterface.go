@@ -1,6 +1,6 @@
 package valueObjects
 
 type ValidationInterface interface {
-	AddMessage(messages MessageInterface)
+	AddMessage(message MessageInterface)
 	GetMessages() []MessageInterface
 }
