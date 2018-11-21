@@ -4,3 +4,5 @@ go:
   - "1.11.x"
 script:
   - go build application.go
+  - go test ./tests -cover -v
+

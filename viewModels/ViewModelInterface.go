@@ -1,10 +1,12 @@
 package viewModels
 
-import "github.com/apmath-web/credit-go/valueObjects"
+import (
+	"github.com/apmath-web/credit-go/valueObjects"
+)
 
 type ViewModelInterface interface {
-	Fill(JsonData interface{}) (bool, error)
+	Fill(jsonData map[string]interface{}) bool
 	Fetch() (interface{}, error)
-	Validate() (bool, error)
-	GetValidation() (valueObjects.ValidationInterface, error)
+	Validate() bool
+	GetValidation() valueObjects.ValidationInterface
 }
