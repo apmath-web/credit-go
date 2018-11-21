@@ -6,10 +6,9 @@ import (
 )
 
 func TestPerson(t *testing.T) {
-	total := new(valueObjects.Person)
 	fname := "FName"
 	lname := "LName"
-	total.Person(fname, lname)
+	total := valueObjects.GenPerson(fname, lname)
 	if total.GetFirstName() != fname {
 		t.Errorf("Don't save any firstname. Got: %+v. Want %+v.",
 			total.GetFirstName(), fname)

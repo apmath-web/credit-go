@@ -4,9 +4,11 @@ type Person struct {
 	FirstName, LastName string
 }
 
-func (p *Person) Person(firstName string, lastName string) {
+func GenPerson(firstName string, lastName string) PersonInterface {
+	p := new(Person)
 	p.FirstName = firstName
 	p.LastName = lastName
+	return p
 }
 
 func (p *Person) GetFirstName() string {

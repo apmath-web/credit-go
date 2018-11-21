@@ -2,46 +2,66 @@ package viewModels
 
 import "C"
 import (
-	"encoding/json"
 	"errors"
 	"github.com/apmath-web/credit-go/valueObjects"
-	"net/http"
+	"reflect"
 )
 
 type Person struct {
 	validMessages valueObjects.Validation
 	FirstName     string `json:"firstName"`
 	LastName      string `json:"lastName"`
+	JsonData      map[string]interface{}
 }
 
-func (p *Person) Fill(JsonData *http.Request) (bool, valueObjects.ValidationInterface) {
-	body := JsonData.Body
-	decoder := json.NewDecoder(body)
-	if err := decoder.Decode(p); err != nil {
-		p.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("Package", err.Error()))
-		return false, &p.validMessages
-	}
-	return true, nil
+func (p *Person) Fill(jsonData map[string]interface{}) bool {
+	p.JsonData = jsonData
+	return true
 }
 
 func (p *Person) Fetch() (interface{}, error) {
 	return 0, errors.New("Not implement\n")
 }
 
+func (p *Person) check(type_ string, name string) interface{} {
+	if val, ok := p.JsonData[name]; ok && val == nil {
+		p.validMessages.AddMessage(
+			valueObjects.GenMessage(name, "Is empty."))
+		return nil
+	}
+	if val, ok := p.JsonData[name]; ok && val != nil && reflect.TypeOf(val).String() == type_ {
+		return val
+	} else {
+		if ok {
+			p.validMessages.AddMessage(
+				valueObjects.GenMessage(name, "Must be "+type_+"."))
+		} else {
+			p.validMessages.AddMessage(
+				valueObjects.GenMessage(name, "No field."))
+		}
+		return nil
+	}
+}
+
 func (p *Person) Validate() bool {
-	if p.FirstName == "" {
-		p.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("FistName", "Is empty."))
-	}
-	if p.LastName == "" {
-		p.validMessages.AddMessages(
-			valueObjects.GenMessageInArray("LastName", "Is empty."))
-	}
+	p.validateFirstName()
+	p.validateLastName()
 	if len(p.validMessages.GetMessages()) == 0 {
 		return true
 	}
 	return false
+}
+
+func (p *Person) validateFirstName() {
+	if val := p.check("string", "firstName"); val != nil {
+		p.FirstName = val.(string)
+	}
+}
+
+func (p *Person) validateLastName() {
+	if val := p.check("string", "lastName"); val != nil {
+		p.LastName = val.(string)
+	}
 }
 
 func (p *Person) GetValidation() valueObjects.ValidationInterface {
