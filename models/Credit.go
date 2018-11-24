@@ -41,6 +41,8 @@ func (c *Credit) GetId() int {
 func (c *Credit) SetId(id int) {
 	if c.Id == -1 {
 		c.Id = id
+	} else {
+		panic("Your set one more ID!")
 	}
 }
 
