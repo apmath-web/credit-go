@@ -23,11 +23,13 @@ func GenCredit(person valueObjects.PersonInterface, amount data.Money, agreement
 	c := new(Credit)
 	c.Person = person
 	c.Amount = amount
+	//TODO: checking amount as said in spec
 	c.AgreementAt = agreementAt
 	c.Currency = currency
 	c.Duration = duration
 	c.Percent = percent
-	c.Rounding = 0 //TODO: Write a magic function for calculate rounding
+	c.Rounding = 0
+	//TODO: Write a magic function for calculate rounding
 	c.Id = -1
 	return c
 }
