@@ -23,6 +23,9 @@ func (r *CreditRepository) Get(id int) models.CreditInterface {
 	return nil
 }
 func (r *CreditRepository) Store(credit models.CreditInterface) {
+	if credit.GetId() != -1 {
+		panic("Credit Has already got ID!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	}
 	r.numberOfCredits++
 	credit.SetId(r.numberOfCredits)
 	r.credits[r.numberOfCredits] = credit
