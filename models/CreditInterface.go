@@ -6,17 +6,16 @@ import (
 )
 
 type CreditInterface interface {
-	Credit(person valueObjects.PersonInterface, amount data.Money, agreementAt data.Date,
-		currency data.Currency, duration int, percent int, rounding int)
 	GetId() int
+	SetId(id int)
 	GetPerson() valueObjects.PersonInterface
 	GetAmount() data.Money
 	GetAgreementAt() data.Date
 	GetCurrency() data.Currency
-	GetDuration() int
-	GetPercent() int
+	GetDuration() int32
+	GetPercent() int32
 
-	GetRounding() int
+	GetRounding() int32
 	GetRemainAmount() data.Money
 	GetPayments(type_ data.Type, state data.State) []valueObjects.PaymentInterface
 

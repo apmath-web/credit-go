@@ -11,26 +11,35 @@ type Credit struct {
 	Amount       data.Money                   `json:"amount"`
 	AgreementAt  data.Date                    `json:"agreementAt"`
 	Currency     data.Currency                `json:"currency"`
-	Duration     int                          `json:"duration"`
-	Percent      int                          `json:"percent"`
-	Rounding     int
+	Duration     int32                        `json:"duration"`
+	Percent      int32                        `json:"percent"`
+	Rounding     int32
 	RemainAmount data.Money
 	Payments     []valueObjects.PaymentInterface
 }
 
-func (c *Credit) Credit(person valueObjects.PersonInterface, amount data.Money, agreementAt data.Date,
-	currency data.Currency, duration int, percent int, rounding int) {
+func GenCredit(person valueObjects.PersonInterface, amount data.Money, agreementAt data.Date,
+	currency data.Currency, duration int32, percent int32) CreditInterface {
+	c := new(Credit)
 	c.Person = person
 	c.Amount = amount
 	c.AgreementAt = agreementAt
 	c.Currency = currency
 	c.Duration = duration
 	c.Percent = percent
-	c.Rounding = rounding
+	c.Rounding = 0 //TODO: Write a magic function for calculate rounding
+	c.Id = -1
+	return c
 }
 
 func (c *Credit) GetId() int {
 	return c.Id
+}
+
+func (c *Credit) SetId(id int) {
+	if c.Id == -1 {
+		c.Id = id
+	}
 }
 
 func (c *Credit) GetPerson() valueObjects.PersonInterface {
@@ -49,15 +58,15 @@ func (c *Credit) GetCurrency() data.Currency {
 	return c.Currency
 }
 
-func (c *Credit) GetDuration() int {
+func (c *Credit) GetDuration() int32 {
 	return c.Duration
 }
 
-func (c *Credit) GetPercent() int {
+func (c *Credit) GetPercent() int32 {
 	return c.Percent
 }
 
-func (c *Credit) GetRounding() int {
+func (c *Credit) GetRounding() int32 {
 	return c.Rounding
 }
 
