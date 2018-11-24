@@ -34,5 +34,3 @@ func (r *CreditRepository) Store(credit models.CreditInterface) {
 func (r *CreditRepository) Remove(credit models.CreditInterface) error {
 	return errors.New("Not implement")
 }
-
-var Repository = GenRepository()

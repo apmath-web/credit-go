@@ -3,7 +3,6 @@ package actions
 import (
 	"fmt"
 	"github.com/apmath-web/credit-go/models"
-	"github.com/apmath-web/credit-go/repositories"
 	"github.com/apmath-web/credit-go/valueObjects"
 	"github.com/apmath-web/credit-go/viewModels"
 	"net/http"
@@ -32,7 +31,7 @@ func Create(response http.ResponseWriter, request *http.Request) {
 	credit := models.GenCredit(person, creditViewModel.GetAmount(),
 		creditViewModel.GetAgreementAt(), creditViewModel.GetCurrency(),
 		creditViewModel.GetDuration(), creditViewModel.GetPercent())
-	repo := repositories.Repository
+	repo := Repository
 	repo.Store(credit)
 	fmt.Fprintf(response, "{\"id\": %d }", credit.GetId())
 }
