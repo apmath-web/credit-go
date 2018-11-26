@@ -3,6 +3,7 @@ package actions
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/apmath-web/credit-go/repositories"
 	"github.com/apmath-web/credit-go/valueObjects"
 	"net/http"
 )
@@ -50,3 +51,5 @@ func ptrMessagesToJsonErrMessage(message string,
 	}
 	return string(res)
 }
+
+var Repository = repositories.GenRepository()

@@ -2,6 +2,8 @@ package actions
 
 import (
 	"fmt"
+	"github.com/apmath-web/credit-go/models"
+	"github.com/apmath-web/credit-go/valueObjects"
 	"github.com/apmath-web/credit-go/viewModels"
 	"net/http"
 )
@@ -10,7 +12,7 @@ func Create(response http.ResponseWriter, request *http.Request) {
 	response.Header().Add("Content-Type",
 		"application/json; charset=utf-8")
 	jsonData := toJson(response, request)
-	if jsonData != nil {
+	if jsonData == nil {
 		return
 	}
 	creditViewModel := new(viewModels.Credit)
@@ -23,5 +25,13 @@ func Create(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprint(response, jsonData)
 		return
 	}
-	fmt.Fprintf(response, "{\"id\":1}")
+	personViewModel := creditViewModel.GetPerson()
+	person := valueObjects.GenPerson(
+		personViewModel.GetFirstName(), personViewModel.GetLastName())
+	credit := models.GenCredit(person, creditViewModel.GetAmount(),
+		creditViewModel.GetAgreementAt(), creditViewModel.GetCurrency(),
+		creditViewModel.GetDuration(), creditViewModel.GetPercent())
+	repo := Repository
+	repo.Store(credit)
+	fmt.Fprintf(response, "{\"id\": %d }", credit.GetId())
 }
