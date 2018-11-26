@@ -32,5 +32,6 @@ func (r *CreditRepository) Store(credit models.CreditInterface) {
 }
 
 func (r *CreditRepository) Remove(credit models.CreditInterface) error {
+	// TODO implement logic
 	return errors.New("Not implement")
 }
