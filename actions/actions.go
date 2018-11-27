@@ -17,7 +17,7 @@ func Handle(response http.ResponseWriter, request *http.Request) {
 		Create(response, request)
 		return
 	}
-	if validGetCredit.Match(path) && request.Method == "GET" {
+	if validCreditId.Match(path) && request.Method == "GET" {
 		Get(response, request)
 		return
 	}
@@ -65,4 +65,4 @@ func errorMessage(message string, code int, response http.ResponseWriter) {
 var Repository = repositories.GenRepository()
 
 var validCredit = regexp.MustCompile("^/credit$")
-var validGetCredit = regexp.MustCompile("^/credit/[0-9]+$")
+var validCreditId = regexp.MustCompile("^/credit/[0-9]+$")
