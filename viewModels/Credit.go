@@ -29,7 +29,7 @@ func (c *Credit) Fetch() interface{} {
 	jsonData["amount"] = c.Amount
 	jsonData["agreementAt"] = c.AgreementAt
 	jsonData["currency"] = c.Currency
-	jsonData["Duration"] = c.Duration
+	jsonData["duration"] = c.Duration
 	jsonData["percent"] = c.Percent
 	return jsonData
 }
