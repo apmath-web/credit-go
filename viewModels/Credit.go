@@ -139,8 +139,13 @@ func (c *Credit) GetValidation() valueObjects.ValidationInterface {
 	return &c.validMessages
 }
 
-func (c *Credit) Hydrate(credit models.CreditInterface) error {
-	return nil
+func (c *Credit) Hydrate(credit models.CreditInterface) {
+	c.Person.Hydrate(credit.GetPerson())
+	c.Amount = credit.GetAmount().Mon2Int()
+	c.AgreementAt = credit.GetAgreementAt().Date2Str()
+	c.Currency = credit.GetCurrency().Cur2Str()
+	c.Duration = credit.GetDuration()
+	c.Percent = credit.GetPercent()
 }
 
 func (c *Credit) GetPerson() PersonInterface {

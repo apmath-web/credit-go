@@ -11,11 +11,12 @@ import (
 
 func Handle(response http.ResponseWriter, request *http.Request) {
 	url := request.URL
-	if validCredit.Match([]byte(url.Path)) && request.Method == "POST" {
+	path := []byte(url.Path)
+	if validCredit.Match(path) && request.Method == "POST" {
 		Create(response, request)
 		return
 	}
-	if validGetCredit.Match([]byte(url.Path)) && request.Method == "GET" {
+	if validGetCredit.Match(path) && request.Method == "GET" {
 		Get(response, request)
 		return
 	}

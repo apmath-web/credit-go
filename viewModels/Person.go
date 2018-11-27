@@ -68,8 +68,9 @@ func (p *Person) GetValidation() valueObjects.ValidationInterface {
 	return &p.validMessages
 }
 
-func (p *Person) Hydrate(person valueObjects.PersonInterface) error {
-	return errors.New("Not implement\n")
+func (p *Person) Hydrate(person valueObjects.PersonInterface) {
+	p.FirstName = person.GetFirstName()
+	p.LastName = person.GetLastName()
 }
 
 func (p *Person) GetFirstName() string {
