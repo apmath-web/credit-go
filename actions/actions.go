@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/apmath-web/credit-go/repositories"
 	"github.com/apmath-web/credit-go/valueObjects"
+	"log"
 	"net/http"
 	"regexp"
 )
@@ -50,6 +51,7 @@ func ptrMessagesToJsonErrMessage(message string,
 	}
 	res, err := json.Marshal(jsonData)
 	if err != nil {
+		log.Fatal(err.Error())
 		return "{\"message\":\"some error on server\"}"
 	}
 	return string(res)

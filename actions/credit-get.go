@@ -28,7 +28,6 @@ func Get(response http.ResponseWriter, request *http.Request) {
 	creditViewModel := new(viewModels.Credit)
 	creditViewModel.Hydrate(credit)
 	jsonData := creditViewModel.Fetch()
-	fmt.Println(jsonData)
 	jsonBytes, err := json.Marshal(jsonData)
 	if err != nil {
 		log.Fatal(err.Error())
