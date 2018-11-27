@@ -19,14 +19,19 @@ type Credit struct {
 	JsonData      map[string]interface{}
 }
 
-func (c *Credit) Fill(jsonData map[string]interface{}) bool {
+func (c *Credit) Fill(jsonData map[string]interface{}) {
 	c.JsonData = jsonData
-
-	return true
 }
 
-func (c *Credit) Fetch() (interface{}, error) {
-	return 0, nil
+func (c *Credit) Fetch() interface{} {
+	jsonData := make(map[string]interface{})
+	jsonData["person"] = c.Person.Fetch()
+	jsonData["amount"] = c.Amount
+	jsonData["agreementAt"] = c.AgreementAt
+	jsonData["currency"] = c.Currency
+	jsonData["Duration"] = c.Duration
+	jsonData["percent"] = c.Percent
+	return jsonData
 }
 
 func (c *Credit) check(type_ string, name string) interface{} {

@@ -1,8 +1,10 @@
 package actions
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/apmath-web/credit-go/viewModels"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -25,5 +27,13 @@ func Get(response http.ResponseWriter, request *http.Request) {
 	}
 	creditViewModel := new(viewModels.Credit)
 	creditViewModel.Hydrate(credit)
-	fmt.Fprintf(response, "{\"id\": %d }", credit.GetId())
+	jsonData := creditViewModel.Fetch()
+	fmt.Println(jsonData)
+	jsonBytes, err := json.Marshal(jsonData)
+	if err != nil {
+		log.Fatal(err.Error())
+		errorMessage(err.Error(), 500, response)
+		return
+	}
+	fmt.Fprint(response, string(jsonBytes[:]))
 }

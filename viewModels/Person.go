@@ -2,7 +2,6 @@ package viewModels
 
 import "C"
 import (
-	"errors"
 	"github.com/apmath-web/credit-go/valueObjects"
 	"reflect"
 )
@@ -14,13 +13,15 @@ type Person struct {
 	JsonData      map[string]interface{}
 }
 
-func (p *Person) Fill(jsonData map[string]interface{}) bool {
+func (p *Person) Fill(jsonData map[string]interface{}) {
 	p.JsonData = jsonData
-	return true
 }
 
-func (p *Person) Fetch() (interface{}, error) {
-	return 0, errors.New("Not implement\n")
+func (p *Person) Fetch() interface{} {
+	jsonData := make(map[string]string)
+	jsonData["firstName"] = p.FirstName
+	jsonData["lastName"] = p.LastName
+	return jsonData
 }
 
 func (p *Person) check(type_ string, name string) interface{} {
