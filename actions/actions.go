@@ -6,12 +6,18 @@ import (
 	"github.com/apmath-web/credit-go/repositories"
 	"github.com/apmath-web/credit-go/valueObjects"
 	"net/http"
+	"regexp"
 )
 
 func Handle(response http.ResponseWriter, request *http.Request) {
 	url := request.URL
-	if url.Path == "/credit" && request.Method == "POST" {
+	if validCredit.Match([]byte(url.Path)) && request.Method == "POST" {
 		Create(response, request)
+		return
+	}
+	if validGetCredit.Match([]byte(url.Path)) && request.Method == "GET" {
+		Get(response, request)
+		return
 	}
 	// fetch and display errors here
 }
@@ -21,11 +27,7 @@ func toJson(response http.ResponseWriter, request *http.Request) map[string]inte
 	var jsonData map[string]interface{}
 	err := decoder.Decode(&jsonData)
 	if err != nil {
-		jsonData := ptrMessagesToJsonErrMessage("Validation error",
-			[]valueObjects.MessageInterface{
-				valueObjects.GenMessage("package", err.Error())})
-		response.WriteHeader(400)
-		fmt.Fprint(response, jsonData)
+		errorMessage("Validation error", 400, response)
 		return nil
 	}
 	return jsonData
@@ -52,4 +54,12 @@ func ptrMessagesToJsonErrMessage(message string,
 	return string(res)
 }
 
+func errorMessage(message string, code int, response http.ResponseWriter) {
+	response.WriteHeader(code)
+	fmt.Fprintf(response, "{\"message\":\"%s\"}", message)
+}
+
 var Repository = repositories.GenRepository()
+
+var validCredit = regexp.MustCompile("^/credit$")
+var validGetCredit = regexp.MustCompile("^/credit/[0-9]+$")
