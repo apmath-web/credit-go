@@ -7,7 +7,7 @@ import (
 
 type CreditInterface interface {
 	ViewModelInterface
-	Hydrate(credit models.CreditInterface) error
+	Hydrate(credit models.CreditInterface)
 	GetPerson() PersonInterface
 	GetAmount() data.Money
 	GetAgreementAt() data.Date

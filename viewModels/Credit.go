@@ -19,14 +19,19 @@ type Credit struct {
 	JsonData      map[string]interface{}
 }
 
-func (c *Credit) Fill(jsonData map[string]interface{}) bool {
+func (c *Credit) Fill(jsonData map[string]interface{}) {
 	c.JsonData = jsonData
-
-	return true
 }
 
-func (c *Credit) Fetch() (interface{}, error) {
-	return 0, nil
+func (c *Credit) Fetch() interface{} {
+	jsonData := make(map[string]interface{})
+	jsonData["person"] = c.Person.Fetch()
+	jsonData["amount"] = c.Amount
+	jsonData["agreementAt"] = c.AgreementAt
+	jsonData["currency"] = c.Currency
+	jsonData["duration"] = c.Duration
+	jsonData["percent"] = c.Percent
+	return jsonData
 }
 
 func (c *Credit) check(type_ string, name string) interface{} {
@@ -139,8 +144,13 @@ func (c *Credit) GetValidation() valueObjects.ValidationInterface {
 	return &c.validMessages
 }
 
-func (c *Credit) Hydrate(credit models.CreditInterface) error {
-	return nil
+func (c *Credit) Hydrate(credit models.CreditInterface) {
+	c.Person.Hydrate(credit.GetPerson())
+	c.Amount = credit.GetAmount().Mon2Int64()
+	c.AgreementAt = credit.GetAgreementAt().Date2Str()
+	c.Currency = credit.GetCurrency().Cur2Str()
+	c.Duration = credit.GetDuration()
+	c.Percent = credit.GetPercent()
 }
 
 func (c *Credit) GetPerson() PersonInterface {
