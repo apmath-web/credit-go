@@ -146,7 +146,7 @@ func (c *Credit) GetValidation() valueObjects.ValidationInterface {
 
 func (c *Credit) Hydrate(credit models.CreditInterface) {
 	c.Person.Hydrate(credit.GetPerson())
-	c.Amount = credit.GetAmount().Mon2Int()
+	c.Amount = credit.GetAmount().Mon2Int64()
 	c.AgreementAt = credit.GetAgreementAt().Date2Str()
 	c.Currency = credit.GetCurrency().Cur2Str()
 	c.Duration = credit.GetDuration()

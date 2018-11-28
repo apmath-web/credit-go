@@ -17,7 +17,7 @@ func (m Money) Mon2Str() string {
 	return s
 }
 
-func (m Money) Mon2Int() int64 {
+func (m Money) Mon2Int64() int64 {
 	i := int64(m)
 	return i
 }
