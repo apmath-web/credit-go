@@ -21,6 +21,8 @@ func Handle(response http.ResponseWriter, request *http.Request) {
 		Get(response, request)
 		return
 	}
+	errorMessage("Page not found.", 404, response)
+	// Todo add some header and more information about 404 error
 	// fetch and display errors here
 }
 
