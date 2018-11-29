@@ -10,6 +10,7 @@ import (
 type Payment struct {
 	validMessages   valueObjects.Validation
 	Type            string `json:"type"`
+	State           string `json:"state"`
 	Date            string `json:"date"`
 	AmountOfPayment int64  `json:"payment"`
 	Currency        string `json:"currency"`
@@ -30,7 +31,7 @@ func (p *Payment) Validate() bool {
 	p.validatePayment()
 	p.validateCurrency()
 	p.validateDate()
-
+	p.validateState()
 	if len(p.validMessages.GetMessages()) == 0 {
 		return true
 	}
@@ -104,6 +105,16 @@ func (p *Payment) validateType() {
 	}
 }
 
+func (p *Payment) validateState() {
+	if val := p.check("string", "state"); val != nil {
+		p.State = val.(string)
+		if p.GetState() == "" {
+			p.validMessages.AddMessage(
+				valueObjects.GenMessage("state", "Is unknown state."))
+		}
+	}
+}
+
 func (p *Payment) GetValidation() valueObjects.ValidationInterface {
 	return &p.validMessages
 }
@@ -129,5 +140,5 @@ func (p *Payment) GetType() data.Type {
 }
 
 func (p *Payment) GetState() data.State {
-	return data.State("")
+	return data.State(p.State)
 }
