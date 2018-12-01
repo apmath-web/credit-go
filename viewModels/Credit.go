@@ -8,6 +8,7 @@ import (
 )
 
 type Credit struct {
+
 	viewModel
 	Person      Person `json:"person"`
 	Amount      int64  `json:"amount"`

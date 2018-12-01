@@ -17,6 +17,11 @@ func (m Money) Mon2Str() string {
 	return s
 }
 
+func (m Money) Mon2Int64() int64 {
+	i := int64(m)
+	return i
+}
+
 /*
 make this type more useful, not only int64
 */
