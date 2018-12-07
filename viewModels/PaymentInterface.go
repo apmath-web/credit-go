@@ -7,7 +7,7 @@ import (
 
 type PaymentInterface interface {
 	ViewModelInterface
-	Hydrate(payment valueObjects.PaymentInterface) error
+	Hydrate(payment valueObjects.PaymentInterface)
 	GetPayment() data.Money
 	GetType() data.Type
 	GetCurrency() data.Currency

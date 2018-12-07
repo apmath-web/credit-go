@@ -2,45 +2,20 @@ package viewModels
 
 import "C"
 import (
-	"errors"
 	"github.com/apmath-web/credit-go/valueObjects"
-	"reflect"
 )
 
 type Person struct {
-	validMessages valueObjects.Validation
-	FirstName     string `json:"firstName"`
-	LastName      string `json:"lastName"`
-	JsonData      map[string]interface{}
+	viewModel
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
 }
 
-func (p *Person) Fill(jsonData map[string]interface{}) bool {
-	p.JsonData = jsonData
-	return true
-}
-
-func (p *Person) Fetch() (interface{}, error) {
-	return 0, errors.New("Not implement\n")
-}
-
-func (p *Person) check(type_ string, name string) interface{} {
-	if val, ok := p.JsonData[name]; ok && val == nil {
-		p.validMessages.AddMessage(
-			valueObjects.GenMessage(name, "Is empty."))
-		return nil
-	}
-	if val, ok := p.JsonData[name]; ok && val != nil && reflect.TypeOf(val).String() == type_ {
-		return val
-	} else {
-		if ok {
-			p.validMessages.AddMessage(
-				valueObjects.GenMessage(name, "Must be "+type_+"."))
-		} else {
-			p.validMessages.AddMessage(
-				valueObjects.GenMessage(name, "No field."))
-		}
-		return nil
-	}
+func (p *Person) Fetch() interface{} {
+	jsonData := make(map[string]string)
+	jsonData["firstName"] = p.FirstName
+	jsonData["lastName"] = p.LastName
+	return jsonData
 }
 
 func (p *Person) Validate() bool {
@@ -64,12 +39,9 @@ func (p *Person) validateLastName() {
 	}
 }
 
-func (p *Person) GetValidation() valueObjects.ValidationInterface {
-	return &p.validMessages
-}
-
-func (p *Person) Hydrate(person valueObjects.PersonInterface) error {
-	return errors.New("Not implement\n")
+func (p *Person) Hydrate(person valueObjects.PersonInterface) {
+	p.FirstName = person.GetFirstName()
+	p.LastName = person.GetLastName()
 }
 
 func (p *Person) GetFirstName() string {

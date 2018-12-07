@@ -4,52 +4,28 @@ import (
 	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/models"
 	"github.com/apmath-web/credit-go/valueObjects"
-	"reflect"
 	"time"
 )
 
 type Credit struct {
-	validMessages valueObjects.Validation
-	Person        Person `json:"person"`
-	Amount        int64  `json:"amount"`
-	AgreementAt   string `json:"agreementAt"`
-	Currency      string `json:"currency"`
-	Duration      int32  `json:"duration"`
-	Percent       int32  `json:"percent"`
-	JsonData      map[string]interface{}
+	viewModel
+	Person      Person `json:"person"`
+	Amount      int64  `json:"amount"`
+	AgreementAt string `json:"agreementAt"`
+	Currency    string `json:"currency"`
+	Duration    int32  `json:"duration"`
+	Percent     int32  `json:"percent"`
 }
 
-func (c *Credit) Fill(jsonData map[string]interface{}) bool {
-	c.JsonData = jsonData
-
-	return true
-}
-
-func (c *Credit) Fetch() (interface{}, error) {
-	return 0, nil
-}
-
-func (c *Credit) check(type_ string, name string) interface{} {
-	if val, ok := c.JsonData[name]; ok && val == nil {
-		c.validMessages.AddMessage(
-			valueObjects.GenMessage(name, "Is empty."))
-		return nil
-	}
-	if val, ok := c.JsonData[name]; ok && val != nil && reflect.TypeOf(val).String() == type_ {
-		return val
-	} else {
-		if ok {
-			if type_ == "float64" {
-				type_ = "integer number"
-			}
-			c.validMessages.AddMessage(
-				valueObjects.GenMessage(name, "Must be "+type_+"."))
-		} else {
-			c.validMessages.AddMessage(
-				valueObjects.GenMessage(name, "No field."))
-		}
-		return nil
-	}
+func (c *Credit) Fetch() interface{} {
+	jsonData := make(map[string]interface{})
+	jsonData["person"] = c.Person.Fetch()
+	jsonData["amount"] = c.Amount
+	jsonData["agreementAt"] = c.AgreementAt
+	jsonData["currency"] = c.Currency
+	jsonData["duration"] = c.Duration
+	jsonData["percent"] = c.Percent
+	return jsonData
 }
 
 func (c *Credit) Validate() bool {
@@ -135,12 +111,13 @@ func (c *Credit) validatePercent() {
 	}
 }
 
-func (c *Credit) GetValidation() valueObjects.ValidationInterface {
-	return &c.validMessages
-}
-
-func (c *Credit) Hydrate(credit models.CreditInterface) error {
-	return nil
+func (c *Credit) Hydrate(credit models.CreditInterface) {
+	c.Person.Hydrate(credit.GetPerson())
+	c.Amount = credit.GetAmount().Mon2Int64()
+	c.AgreementAt = credit.GetAgreementAt().Date2Str()
+	c.Currency = credit.GetCurrency().Cur2Str()
+	c.Duration = credit.GetDuration()
+	c.Percent = credit.GetPercent()
 }
 
 func (c *Credit) GetPerson() PersonInterface {
