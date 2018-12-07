@@ -3,27 +3,20 @@ package viewModels
 import (
 	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/valueObjects"
-	"reflect"
 	"time"
 )
 
 type Payment struct {
-	validMessages   valueObjects.Validation
+	viewModel
 	Type            string `json:"type"`
 	State           string `json:"state"`
 	Date            string `json:"date"`
 	AmountOfPayment int64  `json:"payment"`
 	Currency        string `json:"currency"`
-	JsonData        map[string]interface{}
 }
 
-func (p *Payment) Fill(jsonData map[string]interface{}) bool {
-	p.JsonData = jsonData
-	return true
-}
-
-func (p *Payment) Fetch() (interface{}, error) {
-	return 0, nil
+func (p *Payment) Fetch() interface{} { //TODO
+	return 0
 }
 
 func (p *Payment) Validate() bool {
@@ -49,29 +42,6 @@ func (p *Payment) validateDate() {
 			p.validMessages.AddMessage(
 				valueObjects.GenMessage("date", "Is wrong format of date."))
 		}
-	}
-}
-
-func (p *Payment) check(type_ string, name string) interface{} {
-	if val, ok := p.JsonData[name]; ok && val == nil {
-		p.validMessages.AddMessage(
-			valueObjects.GenMessage(name, "Is empty."))
-		return nil
-	}
-	if val, ok := p.JsonData[name]; ok && val != nil && reflect.TypeOf(val).String() == type_ {
-		return val
-	} else {
-		if ok {
-			if type_ == "float64" {
-				type_ = "integer number"
-			}
-			p.validMessages.AddMessage(
-				valueObjects.GenMessage(name, "Must be "+type_+"."))
-		} else {
-			p.validMessages.AddMessage(
-				valueObjects.GenMessage(name, "No field."))
-		}
-		return nil
 	}
 }
 
@@ -115,12 +85,8 @@ func (p *Payment) validateState() {
 	}
 }
 
-func (p *Payment) GetValidation() valueObjects.ValidationInterface {
-	return &p.validMessages
-}
-
-func (p *Payment) Hydrate(payment valueObjects.PaymentInterface) error {
-	return nil
+func (p *Payment) Hydrate(payment valueObjects.PaymentInterface) { //TODO
+	return
 }
 
 func (p *Payment) GetPayment() data.Money {
