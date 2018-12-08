@@ -48,4 +48,5 @@ func PaymentWriteOf(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprint(response, jsonData)
 		return
 	}
+	fmt.Fprintf(response, "{\"paymentExecutedAt\":\"%s\"}", jsonData["date"])
 }
