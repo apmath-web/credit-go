@@ -31,6 +31,9 @@ func (p *Payment) Validate() bool {
 }
 
 func (p *Payment) validateDate() {
+	if val, ok := p.JsonData["date"]; (ok && val == nil) || !ok {
+		p.JsonData["date"] = data.Date(time.Now()).Date2Str()
+	}
 	if val := p.check("string", "date"); val != nil {
 		p.Date = val.(string)
 		if _, err := time.Parse("2006-01-02", p.Date); err != nil {
@@ -61,6 +64,9 @@ func (p *Payment) validateCurrency() {
 }
 
 func (p *Payment) validateType() {
+	if val, ok := p.JsonData["type"]; (ok && val == nil) || !ok {
+		return
+	}
 	if val := p.check("string", "type"); val != nil {
 		p.Type = val.(string)
 		if p.GetType() == "" {
