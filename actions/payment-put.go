@@ -2,6 +2,7 @@ package actions
 
 import (
 	"fmt"
+	"github.com/apmath-web/credit-go/valueObjects"
 	"github.com/apmath-web/credit-go/viewModels"
 	"net/http"
 	"strconv"
@@ -29,6 +30,15 @@ func PaymentWriteOf(response http.ResponseWriter, request *http.Request) {
 	}
 	if val, ok := jsonData["currency"]; (ok && val == nil) || !ok {
 		jsonData["currency"] = credit.GetCurrency().Cur2Str()
+	} else {
+		if jsonData["currency"] != credit.GetCurrency().Cur2Str() {
+			jsonData := ptrMessagesToJsonErrMessage("Validation error",
+				[]valueObjects.MessageInterface{valueObjects.
+					GenMessage("currency", "Not same for credit currency")})
+			response.WriteHeader(400)
+			fmt.Fprint(response, jsonData)
+			return
+		}
 	}
 	paymentViewModel := new(viewModels.Payment)
 	paymentViewModel.Fill(jsonData)
