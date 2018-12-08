@@ -24,7 +24,6 @@ func (p *Payment) Validate() bool {
 	p.validatePayment()
 	p.validateCurrency()
 	p.validateDate()
-	p.validateState()
 	if len(p.validMessages.GetMessages()) == 0 {
 		return true
 	}
@@ -32,10 +31,6 @@ func (p *Payment) Validate() bool {
 }
 
 func (p *Payment) validateDate() {
-	if val, ok := p.JsonData["date"]; (ok && val == nil) || !ok {
-		p.Date = data.Date(time.Now()).Date2Str()
-		p.JsonData["date"] = p.Date
-	}
 	if val := p.check("string", "date"); val != nil {
 		p.Date = val.(string)
 		if _, err := time.Parse("2006-01-02", p.Date); err != nil {
@@ -48,9 +43,9 @@ func (p *Payment) validateDate() {
 func (p *Payment) validatePayment() {
 	if val := p.check("float64", "amount"); val != nil {
 		p.AmountOfPayment = int64(val.(float64))
-		if p.GetPayment() <= 0 && p.GetPayment() > 3000000000000000 {
+		if p.GetPayment() <= 100 && p.GetPayment() > 3000000000000000 {
 			p.validMessages.AddMessage(
-				valueObjects.GenMessage("payment", "Must be between 1 and 3000000000000000"))
+				valueObjects.GenMessage("payment", "Must be between 100 and 3000000000	000000"))
 		}
 	}
 }
@@ -71,16 +66,6 @@ func (p *Payment) validateType() {
 		if p.GetType() == "" {
 			p.validMessages.AddMessage(
 				valueObjects.GenMessage("type", "Is unknown type."))
-		}
-	}
-}
-
-func (p *Payment) validateState() {
-	if val := p.check("string", "state"); val != nil {
-		p.State = val.(string)
-		if p.GetState() == "" {
-			p.validMessages.AddMessage(
-				valueObjects.GenMessage("state", "Is unknown state."))
 		}
 	}
 }

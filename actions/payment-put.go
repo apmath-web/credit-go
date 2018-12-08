@@ -2,10 +2,12 @@ package actions
 
 import (
 	"fmt"
+	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/viewModels"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func PaymentWriteOf(response http.ResponseWriter, request *http.Request) {
@@ -26,6 +28,15 @@ func PaymentWriteOf(response http.ResponseWriter, request *http.Request) {
 	jsonData := toJson(response, request)
 	if jsonData == nil {
 		return
+	}
+	if val, ok := jsonData["currency"]; (ok && val == nil) || !ok {
+		jsonData["currency"] = credit.GetCurrency().Cur2Str()
+	}
+	if val, ok := jsonData["date"]; (ok && val == nil) || !ok {
+		jsonData["date"] = data.Date(time.Now()).Date2Str()
+	}
+	if val, ok := jsonData["type"]; (ok && val == nil) || !ok {
+		jsonData["type"] = "regular"
 	}
 	paymentViewModel := new(viewModels.Payment)
 	paymentViewModel.Fill(jsonData)
