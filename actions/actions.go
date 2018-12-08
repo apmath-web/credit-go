@@ -21,7 +21,7 @@ func Handle(response http.ResponseWriter, request *http.Request) {
 		Get(response, request)
 		return
 	}
-	if validCreditId.Match(path) && request.Method == "Put" {
+	if validCreditId.Match(path) && request.Method == "PUT" {
 		PaymentWriteOf(response, request)
 		return
 	}
