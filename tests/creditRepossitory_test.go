@@ -12,7 +12,10 @@ import (
 func TestCreditRepositoryAddCredit(t *testing.T) {
 	repo := actions.Repository
 	person := valueObjects.GenPerson("Alexandra", "Chernyshova")
-	credit := models.GenCredit(person, 1000, data.Str2Date("2018-10-10"), data.RUR, 10, 10)
+	credit, err := models.GenCredit(person, 10000, data.Str2Date("2018-10-10"), data.RUR, 10, 10)
+	if err != nil {
+		t.Errorf("Error in credit: %v", err.Error())
+	}
 	repo.Store(credit)
 	if credit.GetId() != 1 {
 		t.Errorf("Not right id: %v", credit.GetId())
