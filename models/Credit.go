@@ -86,10 +86,12 @@ func (c *Credit) GetRemainAmount() data.Money {
 }
 
 func (c *Credit) GetPayments(type_ data.Type, state data.State) []valueObjects.PaymentInterface {
+	// todo
 	return c.Payments
 }
 
 func (c *Credit) WriteOf(payment valueObjects.PaymentInterface) error {
+	// todo
 	return nil
 }
 
