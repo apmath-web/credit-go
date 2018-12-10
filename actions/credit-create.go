@@ -28,9 +28,13 @@ func Create(response http.ResponseWriter, request *http.Request) {
 	personViewModel := creditViewModel.GetPerson()
 	person := valueObjects.GenPerson(
 		personViewModel.GetFirstName(), personViewModel.GetLastName())
-	credit := models.GenCredit(person, creditViewModel.GetAmount(),
+	credit, err := models.GenCredit(person, creditViewModel.GetAmount(),
 		creditViewModel.GetAgreementAt(), creditViewModel.GetCurrency(),
 		creditViewModel.GetDuration(), creditViewModel.GetPercent())
+	if err != nil {
+		errorMessage(err.Error(), 400, response)
+		return
+	}
 	repo := Repository
 	repo.Store(credit)
 	fmt.Fprintf(response, "{\"id\": %d }", credit.GetId())
