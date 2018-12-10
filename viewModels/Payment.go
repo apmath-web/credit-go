@@ -46,9 +46,9 @@ func (p *Payment) validateDate() {
 func (p *Payment) validatePayment() {
 	if val := p.check("float64", "payment"); val != nil {
 		p.AmountOfPayment = int64(val.(float64))
-		if p.GetPayment() <= 100 && p.GetPayment() > 9000000000000000 {
+		if p.GetPayment() <= 0 && p.GetPayment() > 3750000000000000 {
 			p.validMessages.AddMessage(
-				valueObjects.GenMessage("payment", "Must be between 100 and 9000000000000000"))
+				valueObjects.GenMessage("payment", "Must be between 0 and 3750000000000000"))
 		}
 	}
 }
