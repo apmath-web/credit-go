@@ -13,6 +13,11 @@ type Payment struct {
 	Date            string `json:"date"`
 	AmountOfPayment int64  `json:"payment"`
 	Currency        string `json:"currency"`
+
+	percent          int32
+	body             int64
+	remainCreditBody int64
+	fullEarlyPayment int64
 }
 
 func (p *Payment) Fetch() interface{} { //TODO
@@ -76,8 +81,16 @@ func (p *Payment) validateType() {
 	}
 }
 
-func (p *Payment) Hydrate(payment valueObjects.PaymentInterface) { //TODO
-	return
+func (p *Payment) Hydrate(payment valueObjects.PaymentInterface) {
+	p.Currency = payment.GetCurrency().Cur2Str()
+	p.Type = payment.GetType().Type2Str()
+	p.Date = payment.GetDate().Date2Str()
+	p.State = payment.GetState().State2Str()
+	p.percent = payment.GetPercent()
+	p.AmountOfPayment = payment.GetPayment().Mon2Int64()
+	p.body = payment.GetBody().Mon2Int64()
+	p.remainCreditBody = payment.GetRemainCreditBody().Mon2Int64()
+	p.fullEarlyPayment = payment.GetFullEarlyRepayment().Mon2Int64()
 }
 
 func (p *Payment) GetPayment() data.Money {
