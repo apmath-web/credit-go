@@ -26,7 +26,6 @@ func Handle(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	if validPayments.Match(path) && request.Method == "GET" {
-		fmt.Println(request.URL.Path)
 		GetPayments(response, request)
 		return
 	}
@@ -44,6 +43,17 @@ func toJson(response http.ResponseWriter, request *http.Request) map[string]inte
 		return nil
 	}
 	return jsonData
+}
+
+func getParam(request *http.Request, param string) string {
+	var key string
+	keys, ok := request.URL.Query()[param]
+	if !ok || len(keys[0]) < 1 {
+		key = ""
+	} else {
+		key = keys[0]
+	}
+	return key
 }
 
 func ptrMessagesToJsonErrMessage(message string,
