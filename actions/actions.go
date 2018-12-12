@@ -13,19 +13,19 @@ import (
 func Handle(response http.ResponseWriter, request *http.Request) {
 	url := request.URL
 	path := []byte(url.Path)
-	if validCredit.Match(path) && request.Method == "POST" {
+	if request.Method == "POST" && validCredit.Match(path) {
 		Create(response, request)
 		return
 	}
-	if validCreditId.Match(path) && request.Method == "GET" {
+	if request.Method == "GET" && validCreditId.Match(path) {
 		Get(response, request)
 		return
 	}
-	if validCreditId.Match(path) && request.Method == "PUT" {
+	if request.Method == "PUT" && validCreditId.Match(path) {
 		PaymentWriteOf(response, request)
 		return
 	}
-	if validPayments.Match(path) && request.Method == "GET" {
+	if request.Method == "GET" && validPayments.Match(path) {
 		GetPayments(response, request)
 		return
 	}
