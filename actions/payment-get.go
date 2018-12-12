@@ -2,6 +2,7 @@ package actions
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -32,6 +33,8 @@ func GetPayments(response http.ResponseWriter, request *http.Request) {
 		errorMessage("Credit not found", 404, response)
 		return
 	}
+	fmt.Fprint(response, "{\"payments\":[{\"type\":\"regular\",\"state\":\"paid\",\"date\":\"2018-10-08\","+
+		"\"payment\":22300,\"percent\":10000,\"body\":12299,\"remainCreditBody\":907704,\"fullEarlyRepayment\":908704}]}")
 
 }
 
