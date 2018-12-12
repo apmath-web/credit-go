@@ -25,6 +25,11 @@ func Handle(response http.ResponseWriter, request *http.Request) {
 		PaymentWriteOf(response, request)
 		return
 	}
+	if validPayments.Match(path) && request.Method == "GET" {
+		fmt.Println(request.URL.Path)
+		GetPayments(response, request)
+		return
+	}
 	errorMessage("Page not found.", 404, response)
 	// Todo add some header and more information about 404 error
 	// fetch and display errors here
@@ -72,3 +77,4 @@ var Repository = repositories.GenRepository()
 
 var validCredit = regexp.MustCompile("^/credit$")
 var validCreditId = regexp.MustCompile("^/credit/[0-9]+$")
+var validPayments = regexp.MustCompile("^/credit/[0-9]+/payments$")
