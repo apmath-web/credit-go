@@ -1,8 +1,12 @@
 package actions
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/apmath-web/credit-go/data"
+	"github.com/apmath-web/credit-go/viewModels"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -33,9 +37,25 @@ func GetPayments(response http.ResponseWriter, request *http.Request) {
 		errorMessage("Credit not found", 404, response)
 		return
 	}
+	payments := credit.GetPayments(data.Type(type_), data.State(state))
+	var answer []interface{}
+	for _, payment := range payments {
+		viewModelPayment := new(viewModels.Payment)
+		viewModelPayment.Hydrate(payment)
+		jsonPayment := viewModelPayment.Fetch()
+		answer = append(answer, jsonPayment)
+	}
+	jsonData := make(map[string][]interface{})
+	jsonData["payments"] = answer
+	jsonBytes, err := json.Marshal(jsonData)
+	if err != nil {
+		log.Fatal(err.Error())
+		errorMessage(err.Error(), 500, response)
+		return
+	}
+	fmt.Println(string(jsonBytes[:]))
 	fmt.Fprint(response, "{\"payments\":[{\"type\":\"regular\",\"state\":\"paid\",\"date\":\"2018-10-08\","+
 		"\"payment\":22300,\"percent\":10000,\"body\":12299,\"remainCreditBody\":907704,\"fullEarlyRepayment\":908704}]}")
-
 }
 
 func validateParam(param string, values []string, isnull bool) error {
