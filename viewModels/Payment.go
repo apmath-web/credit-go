@@ -20,8 +20,19 @@ type Payment struct {
 	fullEarlyPayment int64
 }
 
-func (p *Payment) Fetch() interface{} { //TODO
-	return 0
+func (p *Payment) Fetch() interface{} {
+	jsonData := make(map[string]interface{})
+	jsonData["type"] = p.Type
+	jsonData["state"] = p.State
+	jsonData["date"] = p.Date
+	jsonData["payment"] = p.AmountOfPayment
+	jsonData["percent"] = p.percent
+	jsonData["body"] = p.body
+	jsonData["remainCreditBody"] = p.remainCreditBody
+	if p.State == data.Upcoming.State2Str() || p.Type == data.Next.Type2Str() {
+		jsonData["fullEarlyRepayment"] = p.fullEarlyPayment
+	}
+	return jsonData
 }
 
 func (p *Payment) Validate() bool {
@@ -90,7 +101,10 @@ func (p *Payment) Hydrate(payment valueObjects.PaymentInterface) {
 	p.AmountOfPayment = payment.GetPayment().Mon2Int64()
 	p.body = payment.GetBody().Mon2Int64()
 	p.remainCreditBody = payment.GetRemainCreditBody().Mon2Int64()
-	p.fullEarlyPayment = payment.GetFullEarlyRepayment().Mon2Int64()
+	if payment.GetState() == data.Upcoming || payment.GetType() == data.Next {
+		p.fullEarlyPayment = payment.GetFullEarlyRepayment().Mon2Int64()
+	}
+
 }
 
 func (p *Payment) GetPayment() data.Money {
