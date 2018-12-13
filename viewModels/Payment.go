@@ -83,7 +83,7 @@ func (p *Payment) validateType() {
 	}
 	if val := p.check("string", "type"); val != nil {
 		p.Type = val.(string)
-		if data.Str2Type(p.Type) == "" {
+		if data.Str2Type(p.Type) == data.None {
 			p.validMessages.AddMessage(
 				valueObjects.GenMessage("type", "Is unknown type."))
 		}

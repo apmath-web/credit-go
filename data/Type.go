@@ -6,6 +6,7 @@ const (
 	Regular Type = "regular"
 	Early   Type = "early"
 	Next    Type = "next"
+	None    Type = ""
 )
 
 func (c Type) Type2Str() string {
@@ -31,5 +32,5 @@ func Str2Type(s string) Type {
 	if s == "next" {
 		return Next
 	}
-	return ""
+	return None
 }
