@@ -31,6 +31,5 @@ func (r *CreditRepository) Store(credit models.CreditInterface) {
 }
 
 func (r *CreditRepository) Remove(credit models.CreditInterface) {
-	id := credit.GetId()
-	delete(r.credits, id)
+	delete(r.credits, credit.GetId())
 }
