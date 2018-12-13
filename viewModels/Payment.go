@@ -83,9 +83,12 @@ func (p *Payment) validateType() {
 	}
 	if val := p.check("string", "type"); val != nil {
 		p.Type = val.(string)
-		if p.GetType() == "" {
+		if data.Str2Type(p.Type) == "" {
 			p.validMessages.AddMessage(
 				valueObjects.GenMessage("type", "Is unknown type."))
+		}
+		if p.GetType() == data.Next {
+			p.validMessages.AddMessage(valueObjects.GenMessage("type", "Next type is not allowed."))
 		}
 	}
 }

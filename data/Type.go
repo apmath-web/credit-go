@@ -20,3 +20,16 @@ func (c Type) Type2Str() string {
 	}
 	return ""
 }
+
+func Str2Type(s string) Type {
+	if s == "regular" {
+		return Regular
+	}
+	if s == "early" {
+		return Early
+	}
+	if s == "next" {
+		return Next
+	}
+	return ""
+}
