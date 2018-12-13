@@ -13,15 +13,23 @@ import (
 func Handle(response http.ResponseWriter, request *http.Request) {
 	url := request.URL
 	path := []byte(url.Path)
-	if validCredit.Match(path) && request.Method == "POST" {
+	if request.Method == "POST" && validCredit.Match(path) {
 		Create(response, request)
 		return
 	}
-	if validCreditId.Match(path) && request.Method == "GET" {
+	if request.Method == "GET" && validCreditId.Match(path) {
 		Get(response, request)
 		return
 	}
-	if validCreditId.Match(path) && request.Method == "DELETE" {
+	if request.Method == "PUT" && validCreditId.Match(path) {
+		PaymentWriteOf(response, request)
+		return
+	}
+	if request.Method == "GET" && validPayments.Match(path) {
+		GetPayments(response, request)
+		return
+	}
+	if request.Method == "DELETE" && validCreditId.Match(path) {
 		Delete(response, request)
 		return
 	}
@@ -39,6 +47,17 @@ func toJson(response http.ResponseWriter, request *http.Request) map[string]inte
 		return nil
 	}
 	return jsonData
+}
+
+func getParam(request *http.Request, param string) string {
+	var key string
+	keys, ok := request.URL.Query()[param]
+	if !ok || len(keys[0]) < 1 {
+		key = ""
+	} else {
+		key = keys[0]
+	}
+	return key
 }
 
 func ptrMessagesToJsonErrMessage(message string,
@@ -72,3 +91,4 @@ var Repository = repositories.GenRepository()
 
 var validCredit = regexp.MustCompile("^/credit$")
 var validCreditId = regexp.MustCompile("^/credit/[0-9]+$")
+var validPayments = regexp.MustCompile("^/credit/[0-9]+/payments$")
