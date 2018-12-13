@@ -29,9 +29,7 @@ func (p *Payment) Fetch() interface{} {
 	jsonData["percent"] = p.percent
 	jsonData["body"] = p.body
 	jsonData["remainCreditBody"] = p.remainCreditBody
-	if p.fullEarlyPayment != -1 {
-		jsonData["fullEarlyRepayment"] = p.fullEarlyPayment
-	}
+	jsonData["fullEarlyRepayment"] = p.fullEarlyPayment
 	return jsonData
 }
 
@@ -101,12 +99,7 @@ func (p *Payment) Hydrate(payment valueObjects.PaymentInterface) {
 	p.AmountOfPayment = payment.GetPayment().Mon2Int64()
 	p.body = payment.GetBody().Mon2Int64()
 	p.remainCreditBody = payment.GetRemainCreditBody().Mon2Int64()
-	if payment.GetState() == data.Upcoming || payment.GetState() == data.Next {
-		p.fullEarlyPayment = payment.GetFullEarlyRepayment().Mon2Int64()
-	} else {
-		p.fullEarlyPayment = -1
-	}
-
+	p.fullEarlyPayment = payment.GetFullEarlyRepayment().Mon2Int64()
 }
 
 func (p *Payment) GetPayment() data.Money {
