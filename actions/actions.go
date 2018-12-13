@@ -29,6 +29,10 @@ func Handle(response http.ResponseWriter, request *http.Request) {
 		GetPayments(response, request)
 		return
 	}
+	if request.Method == "DELETE" && validCreditId.Match(path) {
+		Delete(response, request)
+		return
+	}
 	errorMessage("Page not found.", 404, response)
 	// Todo add some header and more information about 404 error
 	// fetch and display errors here

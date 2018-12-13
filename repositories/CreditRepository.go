@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"errors"
 	"github.com/apmath-web/credit-go/models"
 )
 
@@ -31,7 +30,6 @@ func (r *CreditRepository) Store(credit models.CreditInterface) {
 	r.credits[r.numberOfCredits] = credit
 }
 
-func (r *CreditRepository) Remove(credit models.CreditInterface) error {
-	// TODO implement logic
-	return errors.New("Not implement")
+func (r *CreditRepository) Remove(credit models.CreditInterface) {
+	delete(r.credits, credit.GetId())
 }
