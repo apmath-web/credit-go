@@ -14,10 +14,10 @@ type Payment struct {
 	AmountOfPayment int64  `json:"payment"`
 	Currency        string `json:"currency"`
 
-	percent          int32
-	body             int64
-	remainCreditBody int64
-	fullEarlypayment int64
+	percent            int32
+	body               int64
+	remainCreditBody   int64
+	fullEarlyRepayment int64
 }
 
 func (p *Payment) Fetch() interface{} {
@@ -29,7 +29,7 @@ func (p *Payment) Fetch() interface{} {
 	jsonData["percent"] = p.percent
 	jsonData["body"] = p.body
 	jsonData["remainCreditBody"] = p.remainCreditBody
-	jsonData["fullEarlyRepayment"] = p.fullEarlypayment
+	jsonData["fullEarlyRepayment"] = p.fullEarlyRepayment
 	return jsonData
 }
 
@@ -102,7 +102,7 @@ func (p *Payment) Hydrate(payment valueObjects.PaymentInterface) {
 	p.AmountOfPayment = payment.GetPayment().Mon2Int64()
 	p.body = payment.GetBody().Mon2Int64()
 	p.remainCreditBody = payment.GetRemainCreditBody().Mon2Int64()
-	p.fullEarlypayment = payment.GetFullEarlyRepayment().Mon2Int64()
+	p.fullEarlyRepayment = payment.GetFullEarlyRepayment().Mon2Int64()
 }
 
 func (p *Payment) GetPayment() data.Money {
