@@ -12,7 +12,7 @@ type PaymentInterface interface {
 	GetCurrency() data.Currency
 	GetDate() data.Date
 	GetState() data.State
-	GetPercent() data.Money
+	GetPercent() int32
 	GetBody() data.Money
 	GetRemainCreditBody() data.Money
 	GetFullEarlyRepayment() data.Money

@@ -13,10 +13,24 @@ type Payment struct {
 	Date            string `json:"date"`
 	AmountOfPayment int64  `json:"payment"`
 	Currency        string `json:"currency"`
+
+	percent            int32
+	body               int64
+	remainCreditBody   int64
+	fullEarlyRepayment int64
 }
 
-func (p *Payment) Fetch() interface{} { //TODO
-	return 0
+func (p *Payment) Fetch() interface{} {
+	jsonData := make(map[string]interface{})
+	jsonData["type"] = p.Type
+	jsonData["state"] = p.State
+	jsonData["date"] = p.Date
+	jsonData["payment"] = p.AmountOfPayment
+	jsonData["percent"] = p.percent
+	jsonData["body"] = p.body
+	jsonData["remainCreditBody"] = p.remainCreditBody
+	jsonData["fullEarlyRepayment"] = p.fullEarlyRepayment
+	return jsonData
 }
 
 func (p *Payment) Validate() bool {
@@ -69,15 +83,26 @@ func (p *Payment) validateType() {
 	}
 	if val := p.check("string", "type"); val != nil {
 		p.Type = val.(string)
-		if p.GetType() == "" {
+		if data.Str2Type(p.Type) == data.None {
 			p.validMessages.AddMessage(
 				valueObjects.GenMessage("type", "Is unknown type."))
+		}
+		if p.GetType() == data.Next {
+			p.validMessages.AddMessage(valueObjects.GenMessage("type", "Next type is not allowed."))
 		}
 	}
 }
 
-func (p *Payment) Hydrate(payment valueObjects.PaymentInterface) { //TODO
-	return
+func (p *Payment) Hydrate(payment valueObjects.PaymentInterface) {
+	p.Currency = payment.GetCurrency().Cur2Str()
+	p.Type = payment.GetType().Type2Str()
+	p.Date = payment.GetDate().Date2Str()
+	p.State = payment.GetState().State2Str()
+	p.percent = payment.GetPercent()
+	p.AmountOfPayment = payment.GetPayment().Mon2Int64()
+	p.body = payment.GetBody().Mon2Int64()
+	p.remainCreditBody = payment.GetRemainCreditBody().Mon2Int64()
+	p.fullEarlyRepayment = payment.GetFullEarlyRepayment().Mon2Int64()
 }
 
 func (p *Payment) GetPayment() data.Money {
