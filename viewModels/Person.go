@@ -30,12 +30,18 @@ func (p *Person) Validate() bool {
 func (p *Person) validateFirstName() {
 	if val := p.check("string", "firstName"); val != nil {
 		p.FirstName = val.(string)
+		if p.FirstName == "" {
+			p.validMessages.AddMessage(valueObjects.GenMessage("Is empty", "firstName"))
+		}
 	}
 }
 
 func (p *Person) validateLastName() {
 	if val := p.check("string", "lastName"); val != nil {
 		p.LastName = val.(string)
+		if p.LastName == "" {
+			p.validMessages.AddMessage(valueObjects.GenMessage("Is empty", "lastName"))
+		}
 	}
 }
 
