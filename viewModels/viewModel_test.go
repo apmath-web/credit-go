@@ -48,64 +48,68 @@ func TestViewModel(t *testing.T) {
 			numOfTestsNeg = len(negativeTestData)
 			numOfTestsPos = len(positiveTestData)
 		})
-		g.It("Positive tests", func() {
-			for i := 0; i < numOfTestsPos; i++ {
-				g.Describe("Test #"+strconv.Itoa(i+1), func() {
-					g.Before(func() {
-						jsonObjectTest = positiveTestData[i].jsonData
-						validationObjectTest = positiveTestData[i].validMessage
-						testViewModel = new(viewModel)
-					})
-					g.It("View model fill", func() {
-						testViewModel.Fill(jsonObjectTest)
-						g.Assert(testViewModel.JsonData).Equal(jsonObjectTest)
-					})
-					g.It("View model check number", func() {
-						exp := jsonObjectTest["number"]
-						res := testViewModel.check("float64", "number")
-						g.Assert(res).Equal(exp)
+		g.Describe("Positive tests", func() {
+			g.It("Positive tests", func() {
+				for i := 0; i < numOfTestsPos; i++ {
+					g.Describe("Test #"+strconv.Itoa(i+1), func() {
+						g.Before(func() {
+							jsonObjectTest = positiveTestData[i].jsonData
+							validationObjectTest = positiveTestData[i].validMessage
+							testViewModel = new(viewModel)
+						})
+						g.It("View model fill", func() {
+							testViewModel.Fill(jsonObjectTest)
+							g.Assert(testViewModel.JsonData).Equal(jsonObjectTest)
+						})
+						g.It("View model check number", func() {
+							exp := jsonObjectTest["number"]
+							res := testViewModel.check("float64", "number")
+							g.Assert(res).Equal(exp)
 
+						})
+						g.It("View model check bool", func() {
+							exp := jsonObjectTest["bool"].(bool)
+							res := testViewModel.check("bool", "bool")
+							g.Assert(res).Equal(exp)
+						})
+						g.It("View model check string", func() {
+							exp := jsonObjectTest["string"]
+							res := testViewModel.check("string", "string")
+							g.Assert(res).Equal(exp)
+						})
+						g.It("View model get validation", func() {
+							g.Assert(validationObjectTest).Equal(testViewModel.GetValidation())
+						})
 					})
-					g.It("View model check bool", func() {
-						exp := jsonObjectTest["bool"].(bool)
-						res := testViewModel.check("bool", "bool")
-						g.Assert(res).Equal(exp)
-					})
-					g.It("View model check string", func() {
-						exp := jsonObjectTest["string"]
-						res := testViewModel.check("string", "string")
-						g.Assert(res).Equal(exp)
-					})
-					g.It("View model get validation", func() {
-						g.Assert(validationObjectTest).Equal(testViewModel.GetValidation())
-					})
-				})
-			}
+				}
+			})
 		})
-		g.It("Negative tests", func() {
-			for i := 0; i < numOfTestsNeg; i++ {
-				g.Describe("Test #"+strconv.Itoa(i+1), func() {
-					g.Before(func() {
-						jsonObjectTest = negativeTestData[i].jsonData
-						validationObjectTest = negativeTestData[i].validMessage
-						testViewModel = new(viewModel)
-						testViewModel.Fill(jsonObjectTest)
-					})
-					g.It("View model negative check number", func() {
-						res := testViewModel.check("float64", "number")
-						g.Assert(res).Equal(nil)
+		g.Describe("Negative tests", func() {
+			g.It("Negative tests", func() {
+				for i := 0; i < numOfTestsNeg; i++ {
+					g.Describe("Test #"+strconv.Itoa(i+1), func() {
+						g.Before(func() {
+							jsonObjectTest = negativeTestData[i].jsonData
+							validationObjectTest = negativeTestData[i].validMessage
+							testViewModel = new(viewModel)
+							testViewModel.Fill(jsonObjectTest)
+						})
+						g.It("View model negative check number", func() {
+							res := testViewModel.check("float64", "number")
+							g.Assert(res).Equal(nil)
 
+						})
+						g.It("View model negative check bool", func() {
+							res := testViewModel.check("bool", "bool")
+							g.Assert(res).Equal(nil)
+						})
+						g.It("View model negative check string", func() {
+							res := testViewModel.check("string", "string")
+							g.Assert(res).Equal(nil)
+						})
 					})
-					g.It("View model negative check bool", func() {
-						res := testViewModel.check("bool", "bool")
-						g.Assert(res).Equal(nil)
-					})
-					g.It("View model negative check string", func() {
-						res := testViewModel.check("string", "string")
-						g.Assert(res).Equal(nil)
-					})
-				})
-			}
+				}
+			})
 		})
 	})
 }
