@@ -30,7 +30,10 @@ func TestPaymentViewModel(t *testing.T) {
 	g.Describe("View model tests", func() {
 		g.Before(func() {
 			negativeTestData = []TestData{
-				{map[string]interface{}{},
+				{map[string]interface{}{"payment": 2955.0,
+					"currency": "RUR",
+					"date":     "2018-01-01",
+					"type":     "regular"},
 					0, 0, 0, 0,
 					nil},
 			}
@@ -77,6 +80,16 @@ func TestPaymentViewModel(t *testing.T) {
 					"type":     "early"},
 					0, 0, 0, 0,
 					nil},
+				{map[string]interface{}{"payment": 2955.0,
+					"currency": "RUR",
+					"date":     "2018-01-01"},
+					0, 0, 0, 0,
+					nil},
+				{map[string]interface{}{"payment": 2955.0,
+					"currency": "RUR",
+					"type":     "regular"},
+					0, 0, 0, 0,
+					nil},
 			}
 			numOfTestsNeg = len(negativeTestData)
 			numOfTestsPos = len(positiveTestData)
@@ -95,11 +108,15 @@ func TestPaymentViewModel(t *testing.T) {
 					g.Describe("#Payment view model from request", func() {
 						g.Before(func() {
 							currency = jsonObjectTest["currency"].(string)
-							date = jsonObjectTest["date"].(string)
-							if date == "" {
+							date_tmp, ok := jsonObjectTest["date"].(string)
+							date = date_tmp
+							if date == "" || !ok {
 								date = data.Date(time.Now()).Date2Str()
 							}
-							type_ = jsonObjectTest["type"].(string)
+							type_, ok = jsonObjectTest["type"].(string)
+							if !ok {
+								type_ = ""
+							}
 							paymentAmount = int64(jsonObjectTest["payment"].(float64))
 							testPaymentViewModel = new(Payment)
 							testPaymentViewModel.Fill(jsonObjectTest)
@@ -144,7 +161,7 @@ func TestPaymentViewModel(t *testing.T) {
 								res := testPaymentViewModel.GetPayment()
 								g.Assert(res).Equal(data.Money(paymentAmount))
 							})
-							g.It("get currency", func() {
+							g.It("get date", func() {
 								res := testPaymentViewModel.GetDate()
 								g.Assert(res).Equal(data.Str2Date(date))
 							})
@@ -159,8 +176,40 @@ func TestPaymentViewModel(t *testing.T) {
 					g.Before(func() {
 						jsonObjectTest = negativeTestData[i].jsonData
 						//valueObjectTest = negativeTestData[i].valueObject
+						c = negativeTestData[i].cError
+						d = negativeTestData[i].dError
+						ty = negativeTestData[i].tError
+						p = negativeTestData[i].pError
+					})
+					g.BeforeEach(func() {
 						testPaymentViewModel = new(Payment)
 						testPaymentViewModel.Fill(jsonObjectTest)
+					})
+					g.Describe("##Payment view model validate", func() {
+						g.It("validate date", func() {
+							testPaymentViewModel.validateDate()
+							g.Assert(len(testPaymentViewModel.
+								validMessages.GetMessages())).Equal(d)
+						})
+						g.It("validate payment", func() {
+							testPaymentViewModel.validatePayment()
+							g.Assert(len(testPaymentViewModel.
+								validMessages.GetMessages())).Equal(p)
+						})
+						g.It("validate currency", func() {
+							testPaymentViewModel.validateCurrency()
+							g.Assert(len(testPaymentViewModel.
+								validMessages.GetMessages())).Equal(c)
+						})
+						g.It("validate type", func() {
+							testPaymentViewModel.validateType()
+							g.Assert(len(testPaymentViewModel.
+								validMessages.GetMessages())).Equal(ty)
+						})
+						g.It("validation is correct", func() {
+							res := testPaymentViewModel.Validate()
+							g.Assert(res).IsTrue()
+						})
 					})
 				})
 			}

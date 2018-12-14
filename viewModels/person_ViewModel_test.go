@@ -142,30 +142,26 @@ func TestPersonViewModel(t *testing.T) {
 						ln = negativeTestData[i].lnError
 						fn = negativeTestData[i].fnError
 					})
-					g.Describe("#Person view model from request", func() {
-						g.BeforeEach(func() {
-							testPersonViewModel = new(Person)
-							testPersonViewModel.Fill(jsonObjectTest)
-						})
-						g.Describe("##Person view model validate", func() {
-							g.It("validate first name", func() {
-								testPersonViewModel.validateFirstName()
-								g.Assert(len(testPersonViewModel.
-									validMessages.GetMessages())).Equal(fn)
-							})
-							g.It("validate last name", func() {
-								testPersonViewModel.validateLastName()
-								g.Assert(len(testPersonViewModel.
-									validMessages.GetMessages())).Equal(ln)
-							})
-							g.It("validation is correct", func() {
-								res := testPersonViewModel.Validate()
-								g.Assert(res).IsFalse()
-							})
-						})
-
+					g.BeforeEach(func() {
+						testPersonViewModel = new(Person)
+						testPersonViewModel.Fill(jsonObjectTest)
 					})
-
+					g.Describe("#Person view model validate", func() {
+						g.It("validate first name", func() {
+							testPersonViewModel.validateFirstName()
+							g.Assert(len(testPersonViewModel.
+								validMessages.GetMessages())).Equal(fn)
+						})
+						g.It("validate last name", func() {
+							testPersonViewModel.validateLastName()
+							g.Assert(len(testPersonViewModel.
+								validMessages.GetMessages())).Equal(ln)
+						})
+						g.It("validation is correct", func() {
+							res := testPersonViewModel.Validate()
+							g.Assert(res).IsFalse()
+						})
+					})
 				})
 			}
 		})
