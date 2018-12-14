@@ -125,8 +125,8 @@ func TestPersonViewModel(t *testing.T) {
 						})
 						g.Describe("##Person view model fetch", func() {
 							g.It("correct fetch to json data", func() {
-								res := testPersonViewModel.GetFirstName()
-								g.Assert(res).Equal(firstName)
+								res := testPersonViewModel.Fetch()
+								g.Assert(res).Equal(jsonObjectTest)
 							})
 						})
 					})

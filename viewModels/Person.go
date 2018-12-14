@@ -12,7 +12,7 @@ type Person struct {
 }
 
 func (p *Person) Fetch() interface{} {
-	jsonData := make(map[string]string)
+	jsonData := make(map[string]interface{})
 	jsonData["firstName"] = p.FirstName
 	jsonData["lastName"] = p.LastName
 	return jsonData
