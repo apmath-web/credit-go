@@ -11,7 +11,7 @@ func TestViewModel(t *testing.T) {
 	g := goblin.Goblin(t)
 	type TestData struct {
 		jsonData     map[string]interface{}
-		validMessage *valueObjects.Validation
+		validMessage valueObjects.ValidationInterface
 	}
 	var jsonObjectTest map[string]interface{}
 	var validationObjectTest *valueObjects.Validation
