@@ -25,51 +25,43 @@ func TestPersonViewModel(t *testing.T) {
 	g.Describe("Person view model tests", func() {
 		g.Before(func() {
 			negativeTestData = []TestData{
-				TestData{map[string]interface{}{"firstName": "", "lastName": "lastname"},
+				{map[string]interface{}{"firstName": "", "lastName": "lastname"},
 					1, 0, nil},
-				TestData{map[string]interface{}{"firstName": nil, "lastName": "lastname"},
+				{map[string]interface{}{"firstName": nil, "lastName": "lastname"},
 					1, 0, nil},
-				TestData{map[string]interface{}{"firstName": true, "lastName": "lastname"},
+				{map[string]interface{}{"firstName": true, "lastName": "lastname"},
 					1, 0, nil},
-				TestData{map[string]interface{}{"firstName": 1, "lastName": "lastname"},
+				{map[string]interface{}{"firstName": 1, "lastName": "lastname"},
 					1, 0, nil},
-				TestData{map[string]interface{}{"firstName": 0, "lastName": "lastname"},
+				{map[string]interface{}{"firstName": 0, "lastName": "lastname"},
 					1, 0, nil},
-				TestData{map[string]interface{}{"firstName": "firstname", "lastName": ""},
+				{map[string]interface{}{"firstName": "firstname", "lastName": ""},
 					0, 1, nil},
-				TestData{map[string]interface{}{"firstName": "firstname", "lastName": nil},
+				{map[string]interface{}{"firstName": "firstname", "lastName": nil},
 					0, 1, nil},
-				TestData{map[string]interface{}{"firstName": "firstname", "lastName": true},
+				{map[string]interface{}{"firstName": "firstname", "lastName": true},
 					0, 1, nil},
-				TestData{map[string]interface{}{"firstName": "firstname", "lastName": 1},
+				{map[string]interface{}{"firstName": "firstname", "lastName": 1},
 					0, 1, nil},
-				TestData{map[string]interface{}{"firstName": "firstname", "lastName": 0},
+				{map[string]interface{}{"firstName": "firstname", "lastName": 0},
 					0, 1, nil},
 			}
 			positiveTestData = []TestData{
-				TestData{
-					map[string]interface{}{"firstName": "firstname", "lastName": "lastname"}, 0, 0,
+				{map[string]interface{}{"firstName": "firstname", "lastName": "lastname"}, 0, 0,
 					valueObjects.GenPerson("firstname", "lastname")},
-				TestData{
-					map[string]interface{}{"firstName": "FIRSTNAME", "lastName": "LASTNAME"}, 0, 0,
+				{map[string]interface{}{"firstName": "FIRSTNAME", "lastName": "LASTNAME"}, 0, 0,
 					valueObjects.GenPerson("FIRSTNAME", "LASTNAME")},
-				TestData{
-					map[string]interface{}{"firstName": "FiRsTnAmE", "lastName": "LaStNaMe"}, 0, 0,
+				{map[string]interface{}{"firstName": "FiRsTnAmE", "lastName": "LaStNaMe"}, 0, 0,
 					valueObjects.GenPerson("FiRsTnAmE", "LaStNaMe")},
-				TestData{
-					map[string]interface{}{"firstName": "first name", "lastName": "first name"}, 0, 0,
+				{map[string]interface{}{"firstName": "first name", "lastName": "first name"}, 0, 0,
 					valueObjects.GenPerson("first name", "first name")},
-				TestData{
-					map[string]interface{}{"firstName": "f i r s t n a m e", "lastName": "l a s t n a m e"}, 0, 0,
+				{map[string]interface{}{"firstName": "f i r s t n a m e", "lastName": "l a s t n a m e"}, 0, 0,
 					valueObjects.GenPerson("f i r s t n a m e", "l a s t n a m e")},
-				TestData{
-					map[string]interface{}{"firstName": "O", "lastName": "O"}, 0, 0,
+				{map[string]interface{}{"firstName": "O", "lastName": "O"}, 0, 0,
 					valueObjects.GenPerson("O", "O")},
-				TestData{
-					map[string]interface{}{"firstName": "Alexandra", "lastName": "Chernyshova"}, 0, 0,
+				{map[string]interface{}{"firstName": "Alexandra", "lastName": "Chernyshova"}, 0, 0,
 					valueObjects.GenPerson("Alexandra", "Chernyshova")},
-				TestData{
-					map[string]interface{}{"firstName": "S-y#m_o!s", "lastName": "(y^mLa^#"}, 0, 0,
+				{map[string]interface{}{"firstName": "S-y#m_o!s", "lastName": "(y^mLa^#"}, 0, 0,
 					valueObjects.GenPerson("S-y#m_o!s", "(y^mLa^#")}}
 			numOfTestsPos = len(positiveTestData)
 			numOfTestsNeg = len(negativeTestData)
