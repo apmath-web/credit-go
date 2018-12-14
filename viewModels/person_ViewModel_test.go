@@ -87,12 +87,12 @@ func TestPersonViewModel(t *testing.T) {
 							g.It("validate first name", func() {
 								testPersonViewModel.validateFirstName()
 								g.Assert(len(testPersonViewModel.
-									validMessages.GetMessages())).Equal(0)
+									validMessages.GetMessages())).Equal(fn)
 							})
 							g.It("validate last name", func() {
 								testPersonViewModel.validateLastName()
 								g.Assert(len(testPersonViewModel.
-									validMessages.GetMessages())).Equal(0)
+									validMessages.GetMessages())).Equal(ln)
 							})
 							g.It("validation is correct", func() {
 								res := testPersonViewModel.Validate()
