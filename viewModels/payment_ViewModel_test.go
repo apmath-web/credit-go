@@ -30,11 +30,53 @@ func TestPaymentViewModel(t *testing.T) {
 	g.Describe("View model tests", func() {
 		g.Before(func() {
 			negativeTestData = []TestData{
-				{map[string]interface{}{"payment": 2955.0,
+				{map[string]interface{}{"payment": 0.0,
 					"currency": "RUR",
 					"date":     "2018-01-01",
 					"type":     "regular"},
-					0, 0, 0, 0,
+					0, 0, 0, 1,
+					nil},
+				{map[string]interface{}{
+					"currency": "RUB",
+					"date":     "none",
+					"type":     "regular"},
+					1, 1, 0, 1,
+					nil},
+				{map[string]interface{}{"payment": -1324.0,
+					"currency": "RUR",
+					"date":     "2018/01/01",
+					"type":     "regular"},
+					0, 1, 0, 1,
+					nil},
+				{map[string]interface{}{"payment": 3750000000000001.0,
+					"currency": "",
+					"date":     "2018-54-01",
+					"type":     "regular"},
+					1, 1, 0, 1,
+					nil},
+				{map[string]interface{}{"payment": 3750000000000000.0,
+					"currency": "RUR",
+					"date":     "000-01-01",
+					"type":     "kerbfjd"},
+					0, 1, 1, 0,
+					nil},
+				{map[string]interface{}{"payment": 1.0,
+					"currency": "non",
+					"date":     "2018-01-01",
+					"type":     2113178.5},
+					1, 0, 1, 0,
+					nil},
+				{map[string]interface{}{"payment": 23532.0,
+					"currency": "EUR",
+					"date":     "01.02.2029",
+					"type":     "regular"},
+					0, 1, 0, 0,
+					nil},
+				{map[string]interface{}{"payment": 5686.0,
+					"currency": "RUR",
+					"date":     true,
+					"type":     "next"},
+					0, 1, 1, 0,
 					nil},
 			}
 			positiveTestData = []TestData{
@@ -208,7 +250,7 @@ func TestPaymentViewModel(t *testing.T) {
 						})
 						g.It("validation is correct", func() {
 							res := testPaymentViewModel.Validate()
-							g.Assert(res).IsTrue()
+							g.Assert(res).IsFalse()
 						})
 					})
 				})
