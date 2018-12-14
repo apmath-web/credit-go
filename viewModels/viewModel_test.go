@@ -20,7 +20,18 @@ func TestViewModel(t *testing.T) {
 	var numOfTestsPos, numOfTestsNeg int
 	g.Describe("View model tests", func() {
 		g.Before(func() {
-			negativeTestData = []TestData{}
+			negativeTestData = []TestData{{map[string]interface{}{"number": "str", "bool": 1.0, "string": nil},
+				&valueObjects.Validation{}},
+				{map[string]interface{}{"number": true, "bool": nil, "string": 1.231},
+					&valueObjects.Validation{}},
+				{map[string]interface{}{"number": nil, "bool": "trs", "string": true},
+					&valueObjects.Validation{}},
+				{map[string]interface{}{"number": "", "bool": -1.023, "string": false},
+					&valueObjects.Validation{}},
+				{map[string]interface{}{"number": false, "bool": "", "string": -1.1},
+					&valueObjects.Validation{}},
+				{map[string]interface{}{"number": " ", "bool": 0.0, "string": 0.0},
+					&valueObjects.Validation{}}}
 			positiveTestData = []TestData{
 				{map[string]interface{}{"number": 0.2, "bool": false, "string": "str"},
 					&valueObjects.Validation{}},
@@ -74,7 +85,25 @@ func TestViewModel(t *testing.T) {
 		g.It("Negative tests", func() {
 			for i := 0; i < numOfTestsNeg; i++ {
 				g.Describe("Test #"+strconv.Itoa(i+1), func() {
+					g.Before(func() {
+						jsonObjectTest = negativeTestData[i].jsonData
+						validationObjectTest = negativeTestData[i].validMessage
+						testViewModel = new(viewModel)
+						testViewModel.Fill(jsonObjectTest)
+					})
+					g.It("View model negative check number", func() {
+						res := testViewModel.check("float64", "number")
+						g.Assert(res).Equal(nil)
 
+					})
+					g.It("View model negative check bool", func() {
+						res := testViewModel.check("bool", "bool")
+						g.Assert(res).Equal(nil)
+					})
+					g.It("View model negative check string", func() {
+						res := testViewModel.check("string", "string")
+						g.Assert(res).Equal(nil)
+					})
 				})
 			}
 		})
