@@ -55,8 +55,7 @@ func (c *Credit) validatePerson() {
 }
 
 func (c *Credit) validateAgreementAt() {
-	if val, ok := c.JsonData["agreementAt"]; (ok && val == nil) || !ok {
-		// only for agreementAt cause it isn't required
+	if val, ok := c.JsonData["agreementAt"]; (ok && val == nil) || (ok && val == "") || !ok {
 		c.AgreementAt = data.Date(time.Now()).Date2Str()
 		c.JsonData["agreementAt"] = c.AgreementAt
 	}
