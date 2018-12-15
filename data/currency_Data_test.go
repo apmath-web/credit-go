@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestMessageValueObject(t *testing.T) {
+func TestCurrencyData(t *testing.T) {
 	g := goblin.Goblin(t)
 	type TestData struct {
 		currency string

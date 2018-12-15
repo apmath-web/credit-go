@@ -1,6 +1,8 @@
 package data
 
-import "time"
+import (
+	"time"
+)
 
 type Date time.Time
 
@@ -11,7 +13,7 @@ func (d Date) Date2Str() string {
 
 func Str2Date(s string) Date {
 	date, err := time.Parse("2006-01-02", s)
-	if err == nil {
+	if err == nil && Date(date).Date2Str() == s {
 		return Date(date)
 	}
 	return Str2Date(Date(time.Now()).Date2Str())
