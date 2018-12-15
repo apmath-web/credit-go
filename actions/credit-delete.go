@@ -21,7 +21,7 @@ func Delete(response http.ResponseWriter, request *http.Request) {
 		errorMessage("Credit not found", 404, response)
 		return
 	}
-	if credit.GetRemainAmount().Mon2Int64() != 0 {
+	if !credit.IsFinished() {
 		errorMessage("Credit not paid in full", 400, response)
 		return
 	}

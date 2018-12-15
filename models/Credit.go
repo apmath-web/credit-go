@@ -85,6 +85,10 @@ func (c *Credit) GetRemainAmount() data.Money {
 	return c.RemainAmount
 }
 
+func (c *Credit) IsFinished() bool {
+	return false
+}
+
 func (c *Credit) GetPayments(type_ data.Type, state data.State) []valueObjects.PaymentInterface {
 	// todo
 	return c.Payments
