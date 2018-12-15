@@ -1,8 +1,10 @@
 package viewModels
 
 import (
+	"fmt"
 	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/models"
+	"github.com/apmath-web/credit-go/valueObjects"
 	"github.com/franela/goblin"
 	"strconv"
 	"testing"
@@ -22,7 +24,7 @@ func TestCreditViewModel(t *testing.T) {
 		valueObject   models.CreditInterface
 	}
 	var jsonObjectTest map[string]interface{}
-	//var valueObjectTest models.CreditInterface
+	var valueObjectTest models.CreditInterface
 	var testCreditViewModel *Credit
 	var negativeTestData, positiveTestData []TestData
 	var numOfTestsPos, numOfTestsNeg int
@@ -93,6 +95,29 @@ func TestCreditViewModel(t *testing.T) {
 					"duration":    -12.0,
 					"percent":     -10.0,
 				},
+
+					0, 1, 1, 0, 1, 0,
+					nil,
+				},
+				{map[string]interface{}{
+					"person":      map[string]interface{}{"firstName": "FName", "lastName": "dfs"},
+					"amount":      -2000.0,
+					"agreementAt": "2017-12-10",
+					"currency":    "RUR",
+					"percent":     -10.0,
+				},
+
+					0, 1, 1, 0, 1, 0,
+					nil,
+				},
+				{map[string]interface{}{
+					"person":      map[string]interface{}{"firstName": "FName", "lastName": "dfs"},
+					"amount":      -2000.0,
+					"agreementAt": "2017-12-10",
+					"currency":    "RUR",
+					"duration":    -12.0,
+				},
+
 					0, 1, 1, 0, 1, 0,
 					nil,
 				},
@@ -122,7 +147,7 @@ func TestCreditViewModel(t *testing.T) {
 				},
 				{map[string]interface{}{
 					"person":   map[string]interface{}{"firstName": "FName", "lastName": "dfs"},
-					"amount":   1.0,
+					"amount":   600.0,
 					"currency": "EUR",
 					"duration": 6.0,
 					"percent":  1.0,
@@ -142,6 +167,12 @@ func TestCreditViewModel(t *testing.T) {
 					nil,
 				},
 			}
+			positiveTestData[0].valueObject, _ = models.GenCredit(valueObjects.GenPerson("FName", "dfs"),
+				2000, data.Str2Date("2017-12-10"), "RUR", 12, 10)
+			positiveTestData[1].valueObject, _ = models.GenCredit(valueObjects.GenPerson("FName", "dfs"),
+				600, data.Str2Date(data.Date(time.Now()).Date2Str()), "EUR", 6, 1)
+			positiveTestData[2].valueObject, _ = models.GenCredit(valueObjects.GenPerson("FName", "dfs"),
+				3000000000000000, data.Str2Date(data.Date(time.Now()).Date2Str()), "USD", 1200, 300)
 			numOfTestsNeg = len(negativeTestData)
 			numOfTestsPos = len(positiveTestData)
 		})
@@ -150,7 +181,7 @@ func TestCreditViewModel(t *testing.T) {
 				g.Describe("Test #"+strconv.Itoa(i+1), func() {
 					g.Before(func() {
 						jsonObjectTest = positiveTestData[i].jsonData
-						//valueObjectTest = positiveTestData[i].valueObject
+						valueObjectTest = positiveTestData[i].valueObject
 						c = positiveTestData[i].currencyError
 						d = positiveTestData[i].durationError
 						am = positiveTestData[i].amountError
@@ -240,7 +271,37 @@ func TestCreditViewModel(t *testing.T) {
 						})
 					})
 					g.Describe("#Credit view model from value object", func() {
-						//TODO
+						g.Before(func() {
+							testCreditViewModel = new(Credit)
+							currency = valueObjectTest.GetCurrency().Cur2Str()
+							amount = valueObjectTest.GetAmount().Mon2Int64()
+							agreementAt = valueObjectTest.GetAgreementAt().Date2Str()
+							percent = valueObjectTest.GetPercent()
+							duration = valueObjectTest.GetDuration()
+							person = new(Person)
+							person.Hydrate(valueObjectTest.GetPerson())
+							fmt.Printf("%+v", person)
+						})
+						g.Describe("##Credit view model hydrate", func() {
+							g.It("correct hydrate from person value object", func() {
+								testCreditViewModel.Hydrate(valueObjectTest)
+								g.Assert(testCreditViewModel.GetPerson()).Equal(person)
+								g.Assert(testCreditViewModel.Amount).Equal(amount)
+								g.Assert(testCreditViewModel.AgreementAt).Equal(agreementAt)
+								g.Assert(testCreditViewModel.Currency).Equal(currency)
+								g.Assert(testCreditViewModel.Duration).Equal(duration)
+								g.Assert(testCreditViewModel.Percent).Equal(percent)
+							})
+						})
+						g.Describe("##Crdit view model fetch", func() {
+							g.It("correct fetch to json data", func() {
+								res := testCreditViewModel.Fetch().(map[string]interface{})
+								res["amount"] = float64(res["amount"].(int64))
+								res["duration"] = float64(res["duration"].(int32))
+								res["percent"] = float64(res["percent"].(int32))
+								g.Assert(res).Equal(jsonObjectTest)
+							})
+						})
 					})
 				})
 			}
