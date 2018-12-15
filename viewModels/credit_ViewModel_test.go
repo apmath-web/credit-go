@@ -33,7 +33,81 @@ func TestCreditViewModel(t *testing.T) {
 	var c, d, am, ag, ps, pc int
 	g.Describe("View model tests", func() {
 		g.Before(func() {
-			negativeTestData = []TestData{}
+			negativeTestData = []TestData{
+				{map[string]interface{}{
+					"person":      map[string]interface{}{"firstName": "FName", "lastName": "dfs"},
+					"amount":      0.0,
+					"agreementAt": "2017-12-10",
+					"currency":    "RUR",
+					"duration":    5.0,
+					"percent":     0.0,
+				},
+					0, 1, 1, 0, 1, 0,
+					nil,
+				},
+				{map[string]interface{}{
+					"person":      map[string]interface{}{"firstName": "FName", "lastName": "dfs"},
+					"amount":      3000000000000001.0,
+					"agreementAt": "2017-12-10",
+					"currency":    "RUR",
+					"duration":    1201.0,
+					"percent":     301.0,
+				},
+					0, 1, 1, 0, 1, 0,
+					nil,
+				},
+				{map[string]interface{}{
+					"person":      map[string]interface{}{"firstName": nil, "lastName": nil},
+					"agreementAt": "2017-12-10",
+					"currency":    "RUR",
+					"duration":    12.0,
+					"percent":     10.0,
+				},
+					0, 0, 0, 2, 1, 0,
+					nil,
+				},
+				{map[string]interface{}{
+					"person":      map[string]interface{}{"firstName": "FName", "lastName": "dfs"},
+					"amount":      2000.0,
+					"agreementAt": "2017-12-10",
+					"duration":    12.0,
+					"percent":     10.0,
+				},
+					1, 0, 0, 0, 0, 0,
+					nil,
+				},
+				{map[string]interface{}{
+					"person":      map[string]interface{}{"firstName": "FName", "lastName": "dfs"},
+					"amount":      2000.0,
+					"agreementAt": "2017-12-10",
+					"currency":    "RUR",
+				},
+					0, 1, 1, 0, 0, 0,
+					nil,
+				},
+				{map[string]interface{}{
+					"person":      map[string]interface{}{"firstName": "FName", "lastName": "dfs"},
+					"amount":      -2000.0,
+					"agreementAt": "2017-12-10",
+					"currency":    "RUR",
+					"duration":    -12.0,
+					"percent":     -10.0,
+				},
+					0, 1, 1, 0, 1, 0,
+					nil,
+				},
+				{map[string]interface{}{
+					"person":      map[string]interface{}{"firstName": "FName", "lastName": "dfs"},
+					"amount":      2000.0,
+					"agreementAt": "2009/21/02",
+					"currency":    "RUR",
+					"duration":    12.0,
+					"percent":     10.0,
+				},
+					0, 0, 0, 0, 0, 1,
+					nil,
+				},
+			}
 			positiveTestData = []TestData{
 				{map[string]interface{}{
 					"person":      map[string]interface{}{"firstName": "FName", "lastName": "dfs"},
@@ -84,7 +158,7 @@ func TestCreditViewModel(t *testing.T) {
 						ps = positiveTestData[i].personError
 						pc = positiveTestData[i].percentError
 					})
-					g.Describe("#Payment view model from request", func() {
+					g.Describe("#Credit view model from request", func() {
 						g.Before(func() {
 							currency = jsonObjectTest["currency"].(string)
 							date_tmp, ok := jsonObjectTest["agreementAt"].(string)
@@ -102,13 +176,13 @@ func TestCreditViewModel(t *testing.T) {
 							testCreditViewModel.Fill(jsonObjectTest)
 
 						})
-						g.Describe("##Payment view model validate", func() {
+						g.Describe("##Credit view model validate", func() {
 							g.It("validate agreement at", func() {
 								testCreditViewModel.validateAgreementAt()
 								g.Assert(len(testCreditViewModel.
 									validMessages.GetMessages())).Equal(ag)
 							})
-							g.It("validate payment", func() {
+							g.It("validate amount", func() {
 								testCreditViewModel.validateAmount()
 								g.Assert(len(testCreditViewModel.
 									validMessages.GetMessages())).Equal(am)
@@ -118,7 +192,7 @@ func TestCreditViewModel(t *testing.T) {
 								g.Assert(len(testCreditViewModel.
 									validMessages.GetMessages())).Equal(c)
 							})
-							g.It("validate type", func() {
+							g.It("validate duration", func() {
 								testCreditViewModel.validateDuration()
 								g.Assert(len(testCreditViewModel.
 									validMessages.GetMessages())).Equal(d)
@@ -165,6 +239,9 @@ func TestCreditViewModel(t *testing.T) {
 							})
 						})
 					})
+					g.Describe("#Credit view model from value object", func() {
+						//TODO
+					})
 				})
 			}
 		})
@@ -173,24 +250,24 @@ func TestCreditViewModel(t *testing.T) {
 				g.Describe("Test #"+strconv.Itoa(i+1), func() {
 					g.Before(func() {
 						jsonObjectTest = negativeTestData[i].jsonData
-						c = positiveTestData[i].currencyError
-						d = positiveTestData[i].durationError
-						am = positiveTestData[i].amountError
-						ag = positiveTestData[i].agrementError
-						ps = positiveTestData[i].personError
-						pc = positiveTestData[i].percentError
+						c = negativeTestData[i].currencyError
+						d = negativeTestData[i].durationError
+						am = negativeTestData[i].amountError
+						ag = negativeTestData[i].agrementError
+						ps = negativeTestData[i].personError
+						pc = negativeTestData[i].percentError
 					})
 					g.BeforeEach(func() {
 						testCreditViewModel = new(Credit)
 						testCreditViewModel.Fill(jsonObjectTest)
 					})
-					g.Describe("##Payment view model validate", func() {
+					g.Describe("#Credit view model validate", func() {
 						g.It("validate agreement at", func() {
 							testCreditViewModel.validateAgreementAt()
 							g.Assert(len(testCreditViewModel.
 								validMessages.GetMessages())).Equal(ag)
 						})
-						g.It("validate payment", func() {
+						g.It("validate amount", func() {
 							testCreditViewModel.validateAmount()
 							g.Assert(len(testCreditViewModel.
 								validMessages.GetMessages())).Equal(am)
@@ -200,7 +277,7 @@ func TestCreditViewModel(t *testing.T) {
 							g.Assert(len(testCreditViewModel.
 								validMessages.GetMessages())).Equal(c)
 						})
-						g.It("validate type", func() {
+						g.It("validate duration", func() {
 							testCreditViewModel.validateDuration()
 							g.Assert(len(testCreditViewModel.
 								validMessages.GetMessages())).Equal(d)
