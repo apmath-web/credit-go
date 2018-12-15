@@ -86,6 +86,7 @@ func (c *Credit) GetRemainAmount() data.Money {
 }
 
 func (c *Credit) IsFinished() bool {
+	// todo
 	return false
 }
 
