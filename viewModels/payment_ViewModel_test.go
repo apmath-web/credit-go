@@ -209,6 +209,9 @@ func TestPaymentViewModel(t *testing.T) {
 							})
 						})
 					})
+					g.Describe("##Payment view model from value object", func() {
+						//TODO then payment value object will be writen.
+					})
 				})
 			}
 		})
