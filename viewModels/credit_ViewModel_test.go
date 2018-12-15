@@ -1,7 +1,6 @@
 package viewModels
 
 import (
-	"fmt"
 	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/models"
 	"github.com/apmath-web/credit-go/valueObjects"
@@ -280,7 +279,6 @@ func TestCreditViewModel(t *testing.T) {
 							duration = valueObjectTest.GetDuration()
 							person = new(Person)
 							person.Hydrate(valueObjectTest.GetPerson())
-							fmt.Printf("%+v", person)
 						})
 						g.Describe("##Credit view model hydrate", func() {
 							g.It("correct hydrate from person value object", func() {
