@@ -47,7 +47,7 @@ func TestTypeData(t *testing.T) {
 					g.It("str2type test", func() {
 						g.Assert(Str2Type(testDataObject)).Equal(testType)
 					})
-					g.It("cur2type test", func() {
+					g.It("type2str test", func() {
 						g.Assert(testType.Type2Str()).Equal(testDataObject)
 
 					})
