@@ -38,7 +38,7 @@ func TestDateData(t *testing.T) {
 			numberOfTestsNeg = len(negativeTestData)
 			numberOfTestsPos = len(positiveTestData)
 		})
-		g.It("Positive tests for currency", func() {
+		g.It("Positive tests for type_", func() {
 			for i := 0; i < numberOfTestsPos; i++ {
 				g.Describe("Test #"+strconv.Itoa(i+1), func() {
 					g.Before(func() {
@@ -56,7 +56,7 @@ func TestDateData(t *testing.T) {
 				})
 			}
 		})
-		g.It("Negative tests for currency", func() {
+		g.It("Negative tests for type_", func() {
 			for i := 0; i < numberOfTestsNeg; i++ {
 				g.Describe("Test #"+strconv.Itoa(i+1), func() {
 					g.Before(func() {
