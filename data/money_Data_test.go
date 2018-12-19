@@ -26,7 +26,9 @@ func TestMoneyData(t *testing.T) {
 				{"1000000", 1000000, 1000000.0},
 				{"100000000", 100000000, 100000000.0},
 			}
-			negativeTestData = []TestData{}
+			negativeTestData = []TestData{
+				{"10000000000000000000000000000000", -1, -1.0},
+			}
 			numberOfTestsNeg = len(negativeTestData)
 			numberOfTestsPos = len(positiveTestData)
 		})
@@ -54,7 +56,15 @@ func TestMoneyData(t *testing.T) {
 		})
 		g.It("Negative tests for money", func() {
 			for i := 0; i < numberOfTestsNeg; i++ {
-				//TODO later
+				g.Describe("Test #"+strconv.Itoa(i+1), func() {
+					g.Before(func() {
+						testMoney = Money(negativeTestData[i].moneyInt)
+						testDataObject = negativeTestData[i]
+					})
+					g.It("str2mon test", func() {
+						g.Assert(Str2Mon(testDataObject.money)).Equal(testMoney)
+					})
+				})
 			}
 		})
 	})
