@@ -2,6 +2,7 @@ package actions
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/apmath-web/credit-go/valueObjects"
 	"github.com/franela/goblin"
@@ -111,8 +112,11 @@ func TestActionsUtils(t *testing.T) {
 		g.It("non empty description", func() {
 			validator := new(valueObjects.Validation)
 			validator.AddMessage(valueObjects.GenMessage("type", "test"))
-			res := ptrMessagesToJsonErrMessage("message", validator.GetMessages())
-			g.Assert(res).Equal("{\"description\":{\"type\":\"test\"},\"message\":\"message\"}")
+			resStr := ptrMessagesToJsonErrMessage("message", validator.GetMessages())
+			exp := map[string]interface{}{"description": map[string]interface{}{"type": "test"}, "message": "message"}
+			var res interface{}
+			json.Unmarshal([]byte(resStr), &res)
+			g.Assert(res).Equal(exp)
 		})
 	})
 	g.Describe("get param test", func() {
