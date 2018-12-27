@@ -2,26 +2,23 @@ package actions
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 func Delete(response http.ResponseWriter, request *http.Request) {
 	response.Header().Add("Content-Type",
 		"application/json; charset=utf-8")
-	paths := strings.Split(request.URL.Path, "/credit/")
-	id, err := strconv.ParseInt(paths[1], 10, 64)
+	id, err := getId(request.URL.Path)
 	if err != nil {
 		errorMessage("Invalid id format", 400, response)
 		return
 	}
 	repo := Repository
-	credit := repo.Get(int(id))
+	credit := repo.Get(id)
 	if credit == nil {
 		errorMessage("Credit not found", 404, response)
 		return
 	}
-	if credit.GetRemainAmount().Mon2Int64() != 0 {
+	if !credit.IsFinished() {
 		errorMessage("Credit not paid in full", 400, response)
 		return
 	}

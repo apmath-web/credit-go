@@ -20,4 +20,5 @@ type CreditInterface interface {
 	GetPayments(type_ data.Type, state data.State) []valueObjects.PaymentInterface
 
 	WriteOf(payment valueObjects.PaymentInterface) error
+	IsFinished() bool
 }

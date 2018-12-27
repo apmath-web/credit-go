@@ -45,7 +45,7 @@ func (p *Payment) Validate() bool {
 }
 
 func (p *Payment) validateDate() {
-	if val, ok := p.JsonData["date"]; (ok && val == nil) || !ok {
+	if val, ok := p.JsonData["date"]; (ok && val == nil) || (ok && val == "") || !ok {
 		p.JsonData["date"] = data.Date(time.Now()).Date2Str()
 	}
 	if val := p.check("string", "date"); val != nil {
@@ -60,7 +60,7 @@ func (p *Payment) validateDate() {
 func (p *Payment) validatePayment() {
 	if val := p.check("float64", "payment"); val != nil {
 		p.AmountOfPayment = int64(val.(float64))
-		if p.GetPayment() < 1 && p.GetPayment() > 3750000000000000 {
+		if p.GetPayment() < 1 || p.GetPayment() > 3750000000000000 {
 			p.validMessages.AddMessage(
 				valueObjects.GenMessage("payment", "Must be between 1 and 3750000000000000"))
 		}
@@ -78,7 +78,7 @@ func (p *Payment) validateCurrency() {
 }
 
 func (p *Payment) validateType() {
-	if val, ok := p.JsonData["type"]; (ok && val == nil) || !ok {
+	if val, ok := p.JsonData["type"]; (ok && val == nil) || (ok && val == "") || !ok {
 		return
 	}
 	if val := p.check("string", "type"); val != nil {

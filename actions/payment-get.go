@@ -2,21 +2,17 @@ package actions
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/apmath-web/credit-go/data"
 	"github.com/apmath-web/credit-go/viewModels"
 	"log"
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 func GetPayments(response http.ResponseWriter, request *http.Request) {
 	response.Header().Add("Content-Type",
 		"application/json; charset=utf-8")
-	paths := strings.Split(request.URL.Path, "/")
-	id, err := strconv.ParseInt(paths[2], 10, 64)
+	id, err := getId(request.URL.Path)
 	if err != nil {
 		errorMessage("Invalid id format", 400, response)
 		return
@@ -32,7 +28,7 @@ func GetPayments(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	repo := Repository
-	credit := repo.Get(int(id))
+	credit := repo.Get(id)
 	if credit == nil {
 		errorMessage("Credit not found", 404, response)
 		return
@@ -56,20 +52,4 @@ func GetPayments(response http.ResponseWriter, request *http.Request) {
 	fmt.Println(string(jsonBytes[:]))
 	fmt.Fprint(response, "{\"payments\":[{\"type\":\"regular\",\"state\":\"paid\",\"date\":\"2018-10-08\","+
 		"\"payment\":22300,\"percent\":10000,\"body\":12299,\"remainCreditBody\":907704,\"fullEarlyRepayment\":908704}]}")
-}
-
-func validateParam(param string, values []string, isnull bool) error {
-	if param == "" {
-		if isnull {
-			return nil
-		}
-		return errors.New("is empty")
-	} else {
-		for _, val := range values {
-			if val == param {
-				return nil
-			}
-		}
-		return errors.New(param + " is unknown value.")
-	}
 }

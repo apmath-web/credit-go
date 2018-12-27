@@ -2,7 +2,9 @@ language:
   - go
 go:
   - "1.11.x"
+before_script:
+- go get -v github.com/franela/goblin
 script:
   - go build application.go
-  - go test ./tests -cover -v
+  - go test ./... -cover -v
 

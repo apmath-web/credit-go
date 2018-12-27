@@ -85,6 +85,11 @@ func (c *Credit) GetRemainAmount() data.Money {
 	return c.RemainAmount
 }
 
+func (c *Credit) IsFinished() bool {
+	// todo
+	return false
+}
+
 func (c *Credit) GetPayments(type_ data.Type, state data.State) []valueObjects.PaymentInterface {
 	// todo
 	return c.Payments
@@ -97,7 +102,7 @@ func (c *Credit) WriteOf(payment valueObjects.PaymentInterface) error {
 
 func (c *Credit) getAnnuityPayment() float64 {
 	monthPercent := float64(c.Percent) / 12.0 / 100.0
-	power := math.Pow(1.0+monthPercent, float64(c.Percent))
+	power := math.Pow(1.0+monthPercent, float64(c.Duration))
 	return c.Amount.Mon2Float64() * monthPercent * (power / (power - 1.0))
 }
 
@@ -105,8 +110,9 @@ func (c *Credit) getRounding(annuityPayment float64) (int32, error) {
 	if annuityPayment < 100 {
 		return -1, errors.New("Credit payment is less than 100.")
 	}
-	for _, round := range []int{1, 10, 100} {
+	for _, round := range []int{100, 10, 1} {
 		if (round-(int(annuityPayment)%round))*int(c.Duration) < int(annuityPayment) {
+
 			return int32(round), nil
 		}
 	}
