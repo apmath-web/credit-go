@@ -5,8 +5,6 @@ import (
 )
 
 type PaymentInterface interface {
-	Payment(payment int, type_ data.Type,
-		currency data.Currency, date data.Date) error
 	GetPayment() data.Money
 	GetType() data.Type
 	GetCurrency() data.Currency
