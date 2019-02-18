@@ -3,8 +3,23 @@ language:
 go:
   - "1.11.x"
 before_script:
-- go get -v github.com/franela/goblin
+  - go get -v github.com/franela/goblin
+  - mkdir test
+  - cd test
+  - wget https://dl.bintray.com/ptrthomas/karate/karate-0.9.0.RC2.jar
+  - mv karate-0.9.0.RC2.jar karate.jar
+  - git clone https://github.com/apmath-web/credit-bdd.git
+  - mv credit-bdd bdd
+  - cd ..
 script:
   - go build application.go
   - go test ./... -cover -v
+  - docker build -t credit_go .
+  - docker run -d -p 8080:8080 credit_go
+  - cd test
+  - java -jar karate.jar bdd/tests/bdd/create-credit-test.feature
+  - java -jar karate.jar bdd/tests/bdd/read-credit-test.feature
+  - java -jar karate.jar bdd/tests/bdd/payments-list-test.feature
+
+
 
