@@ -19,7 +19,3 @@ script:
   - cd test
   - java -jar karate.jar bdd/tests/bdd/create-credit-test.feature
   - java -jar karate.jar bdd/tests/bdd/read-credit-test.feature
-  - java -jar karate.jar bdd/tests/bdd/payments-list-test.feature
-
-
-
