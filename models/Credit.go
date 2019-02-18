@@ -102,12 +102,11 @@ func (c *Credit) GetPayments(type_ data.Type, state data.State) []valueObjects.P
 		switch type_ {
 		case data.Regular, data.Early:
 			{
-				for _, payment := range payments {
+				for _, payment := range c.Payments {
 					if payment.GetType() == type_ {
-						tmp_payments = append(tmp_payments, payment)
+						payments = append(payments, payment)
 					}
 				}
-				payments = tmp_payments
 			}
 		case data.None:
 			{
@@ -237,12 +236,15 @@ func (c *Credit) WriteOf(paymentRequest valueObjects.PaymentInterface) error {
 	fmt.Printf("%+v\n", lastPayment)
 	paymentRequestDate := c.getPaymentRequestDate(paymentRequest, nextPayment)
 	isPaymentLikeRegular := false
-	fmt.Println(math.Abs(time.Time(paymentRequestDate).Sub(time.Time(nextPayment.GetDate())).Hours() / 24))
-	if math.Abs(time.Time(paymentRequestDate).Sub(time.Time(nextPayment.GetDate())).Hours()/24) >= 1 {
+	fmt.Println(time.Time(nextPayment.GetDate()))
+	fmt.Println(time.Time(lastPayment.GetDate()))
+	fmt.Println(time.Time(paymentRequestDate))
+	fmt.Println(time.Time(paymentRequestDate).Sub(time.Time(nextPayment.GetDate())).Hours() / 24)
+	if time.Time(nextPayment.GetDate()).Sub(time.Time(paymentRequestDate)).Hours()/24 >= 1 {
 		return errors.New("Payment date is more than next payment date")
 	}
-	fmt.Println(math.Abs(time.Time(paymentRequestDate).Sub(time.Time(lastPayment.GetDate())).Hours() / 24))
-	if math.Abs(time.Time(paymentRequestDate).Sub(time.Time(lastPayment.GetDate())).Hours()/24) >= 1 {
+	fmt.Println(time.Time(lastPayment.GetDate()).Sub(time.Time(paymentRequestDate)).Hours() / 24)
+	if time.Time(lastPayment.GetDate()).Sub(time.Time(paymentRequestDate)).Hours()/24 >= 1 {
 		return errors.New("Payment date is outdate")
 	}
 	if paymentRequestDate != nextPayment.GetDate() && paymentType == data.Regular {
@@ -266,6 +268,13 @@ func (c *Credit) WriteOf(paymentRequest valueObjects.PaymentInterface) error {
 	if paymentRequest.GetPayment() < c.regularPayment &&
 		c.regularPayment < nextPayment.GetFullEarlyRepayment() {
 		return errors.New("Payment less than regular")
+	}
+	if paymentType == data.None {
+		if isPaymentLikeRegular {
+			paymentType = data.Regular
+		} else {
+			paymentType = data.Early
+		}
 	}
 	payment := valueObjects.GenPayment(
 		paymentRequest.GetPayment(),
@@ -298,7 +307,8 @@ func (c *Credit) WriteOf(paymentRequest valueObjects.PaymentInterface) error {
 	return nil
 }
 
-func (c *Credit) getPaymentRequestDate(paymentRequest valueObjects.PaymentInterface, nextPayment valueObjects.PaymentInterface) data.Date {
+func (c *Credit) getPaymentRequestDate(paymentRequest valueObjects.PaymentInterface,
+	nextPayment valueObjects.PaymentInterface) data.Date {
 	if paymentRequest.GetDate() == data.NullDate() {
 		return nextPayment.GetDate()
 	} else {
