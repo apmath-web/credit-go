@@ -22,7 +22,7 @@ func toJson(response http.ResponseWriter, request *http.Request) map[string]inte
 	return jsonData
 }
 
-func getParam(request *http.Request, param string) string {
+func getParam(request *http.Request, param string) (string, bool) {
 	var key string
 	keys, ok := request.URL.Query()[param]
 	if !ok || len(keys[0]) < 1 {
@@ -30,7 +30,7 @@ func getParam(request *http.Request, param string) string {
 	} else {
 		key = keys[0]
 	}
-	return key
+	return key, ok
 }
 
 func ptrMessagesToJsonErrMessage(message string,

@@ -47,5 +47,12 @@ func PaymentWriteOf(response http.ResponseWriter, request *http.Request) {
 		fmt.Fprint(response, jsonData)
 		return
 	}
+	payment := valueObjects.GenRequestPayment(paymentViewModel.GetPayment(), paymentViewModel.GetType(),
+		paymentViewModel.GetCurrency(), paymentViewModel.GetDate())
+	err = credit.WriteOf(payment)
+	if err != nil {
+		errorMessage(err.Error(), 400, response)
+		return
+	}
 	fmt.Fprintf(response, "{\"paymentExecutedAt\":\"%s\"}", jsonData["date"])
 }
