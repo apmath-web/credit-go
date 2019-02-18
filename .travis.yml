@@ -15,7 +15,8 @@ script:
   - go build application.go
   - go test ./... -cover -v
   - docker build -t credit_go .
-  - docker run -d -p 8080:8080 credit_go
+  - docker run -d -p 8080:8080 --name credit_go_container credit_go
   - cd test
   - java -jar karate.jar bdd/tests/bdd/create-credit-test.feature
   - java -jar karate.jar bdd/tests/bdd/read-credit-test.feature
+  - docker stop credit_go_container
