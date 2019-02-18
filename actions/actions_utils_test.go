@@ -122,12 +122,12 @@ func TestActionsUtils(t *testing.T) {
 	g.Describe("get param test", func() {
 		g.It("get exist param", func() {
 			req := GenRequestFromUrl("http://aaaaa.aa/?type=next")
-			res := getParam(req, "type")
+			res, _ := getParam(req, "type")
 			g.Assert(res).Equal("next")
 		})
 		g.It("get wrong param", func() {
 			req := GenRequestFromUrl("http://aaaaa.aa/?type=next")
-			res := getParam(req, "state")
+			res, _ := getParam(req, "state")
 			g.Assert(res).Equal("")
 		})
 	})
