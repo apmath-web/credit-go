@@ -44,7 +44,7 @@ func (d Date) GetNumberOfDays() float64 {
 }
 
 func NullDate() Date {
-	return Date(time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC))
+	return Date(time.Date(1, 1, 1, 0, 0, 0, 0, time.UTC))
 }
 
 func Str2Date(s string) Date {

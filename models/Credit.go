@@ -231,19 +231,11 @@ func (c *Credit) WriteOf(paymentRequest valueObjects.PaymentInterface) error {
 	paymentType := paymentRequest.GetType()
 	lastPayment := c.getLastPayment()
 	nextPayment := c.fetchNextPayment(lastPayment, data.Regular, data.NullDate())
-	fmt.Printf("%+v\n", paymentRequest)
-	fmt.Printf("%+v\n", nextPayment)
-	fmt.Printf("%+v\n", lastPayment)
 	paymentRequestDate := c.getPaymentRequestDate(paymentRequest, nextPayment)
 	isPaymentLikeRegular := false
-	fmt.Println(time.Time(nextPayment.GetDate()))
-	fmt.Println(time.Time(lastPayment.GetDate()))
-	fmt.Println(time.Time(paymentRequestDate))
-	fmt.Println(time.Time(paymentRequestDate).Sub(time.Time(nextPayment.GetDate())).Hours() / 24)
 	if time.Time(nextPayment.GetDate()).Sub(time.Time(paymentRequestDate)).Hours()/24 >= 1 {
 		return errors.New("Payment date is more than next payment date")
 	}
-	fmt.Println(time.Time(lastPayment.GetDate()).Sub(time.Time(paymentRequestDate)).Hours() / 24)
 	if time.Time(lastPayment.GetDate()).Sub(time.Time(paymentRequestDate)).Hours()/24 >= 1 {
 		return errors.New("Payment date is outdate")
 	}
