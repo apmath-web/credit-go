@@ -69,7 +69,8 @@ func TestCreditModel(t *testing.T) {
 							testObject.currency, testObject.duration,
 							testObject.percent, testObject.rounding,
 							0, testObject.regularPayment,
-							[]valueObjects.PaymentInterface(nil)}
+							[]valueObjects.PaymentInterface(nil), false,
+							testObject.duration}
 					})
 					g.Describe("#Credit  model creation", func() {
 						g.It("Create credit", func() {
@@ -109,7 +110,7 @@ func TestCreditModel(t *testing.T) {
 							g.Assert(res).Equal(testObject.duration)
 						})
 						g.It("get annuity payment", func() {
-							res := testCreditModel.getAnnuityPayment()
+							res := testCreditModel.getAnnuityPayment(testCreditModel.Amount, testCreditModel.Duration)
 							g.Assert(res).Equal(testObject.annuityPayment)
 						})
 						g.It("get rounding", func() {
@@ -143,7 +144,8 @@ func TestCreditModel(t *testing.T) {
 							testObject.currency, testObject.duration,
 							testObject.percent, testObject.rounding,
 							0, testObject.regularPayment,
-							[]valueObjects.PaymentInterface(nil)}
+							[]valueObjects.PaymentInterface(nil), false,
+							testObject.duration}
 					})
 					g.Describe("Credit model tests for errors", func() {
 						g.It("create model", func() {
@@ -152,7 +154,8 @@ func TestCreditModel(t *testing.T) {
 							g.Assert(res).Equal(nil)
 						})
 						g.It("get rounding", func() {
-							annuityPayment := testCreditModel.getAnnuityPayment()
+							annuityPayment := testCreditModel.getAnnuityPayment(
+								testCreditModel.Amount, testCreditModel.Duration)
 							g.Assert(annuityPayment).Equal(testObject.annuityPayment)
 							res, _ := testCreditModel.getRounding(annuityPayment)
 							g.Assert(res).Equal(int32(-1))

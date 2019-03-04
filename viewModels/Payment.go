@@ -14,7 +14,7 @@ type Payment struct {
 	AmountOfPayment int64  `json:"payment"`
 	Currency        string `json:"currency"`
 
-	percent            int32
+	percent            int64
 	body               int64
 	remainCreditBody   int64
 	fullEarlyRepayment int64
@@ -30,6 +30,7 @@ func (p *Payment) Fetch() interface{} {
 	jsonData["body"] = p.body
 	jsonData["remainCreditBody"] = p.remainCreditBody
 	jsonData["fullEarlyRepayment"] = p.fullEarlyRepayment
+	jsonData["currency"] = p.Currency
 	return jsonData
 }
 
@@ -46,7 +47,7 @@ func (p *Payment) Validate() bool {
 
 func (p *Payment) validateDate() {
 	if val, ok := p.JsonData["date"]; (ok && val == nil) || (ok && val == "") || !ok {
-		p.JsonData["date"] = data.Date(time.Now()).Date2Str()
+		p.JsonData["date"] = data.NullDate().Date2Str()
 	}
 	if val := p.check("string", "date"); val != nil {
 		p.Date = val.(string)
@@ -98,7 +99,7 @@ func (p *Payment) Hydrate(payment valueObjects.PaymentInterface) {
 	p.Type = payment.GetType().Type2Str()
 	p.Date = payment.GetDate().Date2Str()
 	p.State = payment.GetState().State2Str()
-	p.percent = payment.GetPercent()
+	p.percent = payment.GetPercent().Mon2Int64()
 	p.AmountOfPayment = payment.GetPayment().Mon2Int64()
 	p.body = payment.GetBody().Mon2Int64()
 	p.remainCreditBody = payment.GetRemainCreditBody().Mon2Int64()

@@ -6,7 +6,6 @@ import (
 	"github.com/franela/goblin"
 	"strconv"
 	"testing"
-	"time"
 )
 
 func TestPaymentViewModel(t *testing.T) {
@@ -153,7 +152,7 @@ func TestPaymentViewModel(t *testing.T) {
 							date_tmp, ok := jsonObjectTest["date"].(string)
 							date = date_tmp
 							if date == "" || !ok {
-								date = data.Date(time.Now()).Date2Str()
+								date = data.NullDate().Date2Str()
 							}
 							type_, ok = jsonObjectTest["type"].(string)
 							if !ok {
